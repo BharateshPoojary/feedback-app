@@ -1,3 +1,5 @@
+//IN THIS FILE WE ARE DOING USER MODELLING
+
 import mongoose, { Schema, Document } from "mongoose";
 //mongoose: This is the default export, providing the main mongoose object, which includes methods like connect(), model(), etc.
 //{ Schema, Document }: These are named exports. Schema and Document are exported as specific parts of the mongoose library that can be accessed directly, so they are imported inside curly braces.
@@ -84,11 +86,10 @@ const UserModel =
   (mongoose.models.User as mongoose.Model<User>) ||
   mongoose.model<User>("User", UserSchema);
 //here is 2 condition if User Model is  already present   it will be selected among the multiple models
-//or else It will create a new model of U
+//or else It will create a new model
 /**is casting mongoose.models.User to be of type mongoose.Model<User>. Here’s a breakdown of what each part does:
 mongoose.models.User:
 This is typically an object managed by Mongoose that stores any models that have already been created. If User has already been defined as a model, it will be available in mongoose.models.User.
-as mongoose.Model<User>:
-This part is a TypeScript type assertion (casting), which tells TypeScript to treat mongoose.models.User as a mongoose.Model<User> type.
+as mongoose.Model<User>:This part is a TypeScript type assertion (casting), which tells TypeScript to treat mongoose.models.User as a mongoose.Model<User> type.
 mongoose.Model<User> means that the UserModel object should conform to the shape of a Mongoose model where the generic type User represents the structure of each document within the collection. */
 export default UserModel;
