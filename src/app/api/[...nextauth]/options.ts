@@ -52,7 +52,7 @@ export const authentication_using_Authjs = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         //storing the user data in payload
-        token._id = user._id?.toString();
+        token._id = user._id?.toString(); //converting object id to string
         token.isVerified = user.isVerified;
         token.isAcceptingMessage = user.isAcceptingMessage;
         token.username = user.username;
