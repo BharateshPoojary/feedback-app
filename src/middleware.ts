@@ -1,3 +1,4 @@
+//To make the next auth fully functionable we need next-auth middleware
 import { NextRequest, NextResponse } from "next/server";
 //These are part of Next.js's server API and allow you to handle and respond to HTTP requests within middleware
 import { getToken } from "next-auth/jwt"; //this import is made to verify whether a user is having token or not
