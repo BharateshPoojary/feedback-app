@@ -1,4 +1,3 @@
-//with.d.ts the types which we specifically use for mention
 /**Automatic Type Declaration Recognition: TypeScript recognizes files with .d.ts extensions as declaration files, so by default, it will include next-auth.d.ts in its type-checking process. This is helpful because you don’t need to explicitly import these types everywhere—they’re globally available in the project. */
 import "next-auth/jwt"; //this import is for jwt specifc work  like defining types of the payload data here
 import { DefaultSession } from "next-auth"; //this import is general to all like session user object etc
