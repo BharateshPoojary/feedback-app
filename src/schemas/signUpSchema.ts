@@ -5,7 +5,7 @@ export const userNameValidation = z
   .min(2, "Username must be atleast 2 characters")
   .max(20, "Username should not be more than 20 characters")
   .regex(
-    /^[a-zA-Z0-9_-]$/,
+    /^[a-zA-Z0-9_-]+$/,
     "username must ony include letters,numbers,hyphen and underscore"
   );
 
