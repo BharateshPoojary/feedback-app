@@ -15,6 +15,7 @@ const dbConnection = async (): Promise<void> => {
     //If the connection is not done properly it will return an empty string leading to an error
     //{} inside this braces we can give optional properties
     Connection.isConnected = dbConnect.connections[0].readyState;
+    console.log("connected to mongoDB successfully");
   } catch (error) {
     console.log("Failed to connect to the database");
     process.exit(1);
