@@ -14,6 +14,8 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url); //accessing  all the query paramter from the url using destructuring
     const queryParams = { username: searchParams.get("username") }; //safeparese() method accepts argument as  object only so that is  the reason  why it is wrapped in an object . It will search for the query parameter  named username in the url like https://localhost:3000/api?username=bharat?default=true
     const result = usernamequerySchema.safeParse(queryParams); //applying the schema to username query paramter
+    console.log(result.success);
+
     /**
 The safeParse() method in Zod is used to validate data against a defined schema and provides a safe way to handle validation results. Unlike parse(), which throws an error if validation fails, safeParse() always returns an object with two properties:
 

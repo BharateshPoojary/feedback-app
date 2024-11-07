@@ -9,11 +9,13 @@ export async function POST(request: Request) {
       otp: verifySchema,
     });
     const { username, otp } = await request.json();
+
     const decodedusername = decodeURIComponent(username); //this function removes any whitespace code like %20 for white space and we will get the correct username
     const verificationCodeResult = verificationCodeSchema.safeParse({ otp });
+
     if (!verificationCodeResult.success) {
       const verificationCodeErrorspecifictovalidation =
-        verificationCodeResult.error.format().otp?.code?._errors || [];
+        verificationCodeResult.error.format().otp?._errors || [];
       return Response.json(
         {
           success: false,
@@ -22,13 +24,12 @@ export async function POST(request: Request) {
               ? verificationCodeErrorspecifictovalidation.join(", ")
               : "Invalid verfication code",
         },
-        { status: 500 }
+        { status: 400 }
       );
     }
-    const { code } = verificationCodeResult.data.otp;
+    const vCode = verificationCodeResult.data.otp;
     const user = await UserModel.findOne({
       username: decodedusername,
-      verifyCode: code,
     });
     if (!user) {
       return Response.json(
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-    const verifyCodeVerification = user.verifyCode === code;
+    const verifyCodeVerification = user.verifyCode === vCode;
     const isverifyCodeExpired = new Date(user.verifyCodeExpiry) > new Date();
     if (isverifyCodeExpired) {
       return Response.json(
