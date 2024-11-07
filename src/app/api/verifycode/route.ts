@@ -6,14 +6,29 @@ export async function POST(request: Request) {
   await dbConnection();
   try {
     const verificationCodeSchema = z.object({
-      verifyCode: verifySchema,
+      otp: verifySchema,
     });
-    const { username, verifyCode } = await request.json();
+    const { username, otp } = await request.json();
     const decodedusername = decodeURIComponent(username); //this function removes any whitespace code like %20 for white space and we will get the correct username
-    const verificationCode = verificationCodeSchema.safeParse(verifyCode);
+    const verificationCodeResult = verificationCodeSchema.safeParse({ otp });
+    if (!verificationCodeResult.success) {
+      const verificationCodeErrorspecifictovalidation =
+        verificationCodeResult.error.format().otp?.code?._errors || [];
+      return Response.json(
+        {
+          success: false,
+          message:
+            verificationCodeErrorspecifictovalidation.length > 0
+              ? verificationCodeErrorspecifictovalidation.join(", ")
+              : "Invalid verfication code",
+        },
+        { status: 500 }
+      );
+    }
+    const { code } = verificationCodeResult.data.otp;
     const user = await UserModel.findOne({
       username: decodedusername,
-      verifyCode: verificationCode,
+      verifyCode: code,
     });
     if (!user) {
       return Response.json(
@@ -24,12 +39,21 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+    const verifyCodeVerification = user.verifyCode === code;
     const isverifyCodeExpired = new Date(user.verifyCodeExpiry) > new Date();
     if (isverifyCodeExpired) {
       return Response.json(
         {
           success: false,
           message: "verification code has expired.Please signUp again ",
+        },
+        { status: 500 }
+      );
+    } else if (!verifyCodeVerification) {
+      return Response.json(
+        {
+          success: false,
+          message: "Incorrect verification code ",
         },
         { status: 500 }
       );
