@@ -32,7 +32,7 @@ export interface User extends Document {
   verifyCodeExpiry: Date; //Expiry date of code
   isVerified: boolean;
   isAcceptingMessage: boolean; //whether user accepting message or not
-  message: Message[]; //this is a field which includes all the messages document inside an  array which will be relevant to a particular user
+  messages: Message[]; //this is a field which includes all the messages document inside an  array which will be relevant to a particular user
 }
 const UserSchema: Schema<User> = new Schema({
   //In your code, Schema refers to a schema constructor provided by Mongoose, a popular Node.js library for MongoDB. Schema is used to define the structure of documents in a MongoDB collection, setting up fields, types, and validations.
@@ -80,7 +80,7 @@ const UserSchema: Schema<User> = new Schema({
     type: Boolean,
     default: true,
   },
-  message: [MessageSchema],
+  messages: [MessageSchema],
 });
 const UserModel =
   (mongoose.models.User as mongoose.Model<User>) ||
