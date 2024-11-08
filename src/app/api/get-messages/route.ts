@@ -69,3 +69,10 @@ export async function GET() {
     );
   }
 }
+
+/**WHEN TO USE console.error() and throw new Error() object
+ * console.error() is for logging errors without interrupting program flow.
+throw new Error() creates and throws an error, stopping execution unless it is caught by a try-catch block.
+Use console.error() for debugging or logging purposes.
+Use throw new Error() to indicate and propagate an error in your code flow, especially when you need to stop execution or handle specific error cases.
+ */

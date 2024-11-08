@@ -29,10 +29,18 @@ export async function POST(request: Request) {
     }
     const message = { content, createdAt: new Date() };
     usernameinDB.messages.push(message as Message);
+
     /**Type Casting (as Message):
 It tells TypeScript to treat the object as if it is of the Message type.
 This does not validate or ensure that the object has all the required properties of Message. It simply overrides TypeScript's type checking. */
     await usernameinDB.save();
+    return Response.json(
+      {
+        success: true,
+        message: "Message sent successfully",
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error sending message to user", error);
     return Response.json(
