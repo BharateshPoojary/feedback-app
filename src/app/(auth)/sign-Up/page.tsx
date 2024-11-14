@@ -22,7 +22,8 @@ import { useRouter } from "next/navigation";
 import { signUpSchemaValidation } from "@/schemas/signUpSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
-
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 const page = () => {
   const [username, setUsername] = useState("");
   //state for storing username
@@ -99,7 +100,42 @@ const page = () => {
       setIsSubmitting(false);
     }
   };
-  return <div></div>;
+  return (
+    <div className="flex justify-center items-center min-h-screen  bg-gray-700">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+            Bharat Feedback App Welcomes you
+          </h1>
+          <p className="mb-4">Sign up to start your feedback adventure</p>
+          <Form {...form}>
+            I
+            <form
+              onSubmit={form.handleSubmit(submitform)}
+              className="space-y-6"
+            >
+              <FormField
+                control={form.control}
+                name="userName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setUsername(e.target.value);
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default page;
