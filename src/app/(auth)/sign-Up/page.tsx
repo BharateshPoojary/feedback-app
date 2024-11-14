@@ -109,7 +109,7 @@ const page = () => {
           </h1>
           <p className="mb-4">Sign up to start your feedback adventure</p>
           <Form {...form}>
-            I
+            {/* To access all properties and methods in destructured manner */}
             <form
               onSubmit={form.handleSubmit(submitform)}
               className="space-y-6"
