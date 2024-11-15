@@ -17,6 +17,7 @@ const dbConnection = async (): Promise<void> => {
     Connection.isConnected = dbConnect.connections[0].readyState;
     console.log("connected to mongoDB successfully");
   } catch (error) {
+    console.error(error);
     console.log("Failed to connect to the database");
     process.exit(1);
     //Exits the Node.js process with a status code of 1, indicating an error occurred.

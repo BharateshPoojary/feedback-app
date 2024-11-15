@@ -10,10 +10,10 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
 
   await dbConnection();
   try {
-    const { username, email, password } = await request.json();
+    const { userName, email, password } = await request.json();
     /**This part waits for the JSON content of the incoming request to be parsed. The request.json() method reads the body of the request as JSON, which is typically used when the request's body contains JSON data (like {"username": "example", "email": "example@example.com", "password": "securepassword"}). */
     const isExisting_user_by_this_username = await UserModel.findOne({
-      username: username,
+      username: userName,
     });
     //if  user exist by this username
     if (isExisting_user_by_this_username) {
@@ -47,7 +47,7 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
       //if a user does not exist then regsitering a new user
       const hashedpassword = await bcrypt.hash(password, 10);
       const creatingnewuser = new UserModel({
-        username: username,
+        username: userName,
         useremail: email,
         password: hashedpassword,
         verifyCode: verifyCode,
@@ -61,7 +61,7 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
 
     const verificationemail = await sendverificationemail(
       email,
-      username,
+      userName,
       verifyCode
     );
     if (!verificationemail.success) {
