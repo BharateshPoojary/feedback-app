@@ -123,7 +123,7 @@ You prevent type errors within the function, e.g., accessing values.username is 
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
-      <div className="w-1/2 max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+      <div className="w-1/2 max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className=" font-extrabold tracking-tight lg:text-4xl mb-6">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}

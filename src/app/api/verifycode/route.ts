@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const { username, otp } = await request.json();
 
     const decodedusername = decodeURIComponent(username); //this function removes any whitespace code like %20 for white space and we will get the correct username
-    const verificationCodeResult = verificationCodeSchema.safeParse({ otp });
+    const verificationCodeResult = verificationCodeSchema.safeParse({ otp }); //It returns the data inside data object
 
     if (!verificationCodeResult.success) {
       const verificationCodeErrorspecifictovalidation =
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const vCode = verificationCodeResult.data.otp;
+    const vCode = verificationCodeResult.data.otp.code;
     const user = await UserModel.findOne({
       username: decodedusername,
     });
@@ -42,7 +42,8 @@ export async function POST(request: Request) {
     }
     const verifyCodeVerification = user.verifyCode === vCode;
     const isverifyCodeExpired = new Date(user.verifyCodeExpiry) > new Date();
-    if (isverifyCodeExpired) {
+    console.log(user.verifyCodeExpiry, "", new Date());
+    if (!isverifyCodeExpired) {
       return Response.json(
         {
           success: false,
