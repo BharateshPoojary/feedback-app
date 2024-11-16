@@ -123,89 +123,84 @@ You prevent type errors within the function, e.g., accessing values.username is 
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+      <div className="w-1/2 max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className=" font-extrabold tracking-tight lg:text-5xl mb-6">
+          <h1 className=" font-extrabold tracking-tight lg:text-4xl mb-6">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
             Bharat Feedback App Welcomes you
           </h1>
           <p className="mb-4">Sign up to start your feedback adventure</p>
-          <Form {...form}>
-            {/* To access all properties and methods of useForm hook if we not passed that it will throw error syaing The Form component from Shadcn expects a prop that conforms to UseFormReturn, which is the return type of useForm() from react-hook-form. However, if you only pass children, it will complain that the required properties from UseFormReturn (like watch, setValue, etc.) are missing.*/}
-            <form
-              onSubmit={form.handleSubmit(submitform)}
-              className="space-y-6"
-            >
-              <FormField
-                control={form.control}
-                name="userName"
-                render={({ field }) => (
-                  /**render  prop   is a function that receives an object with properties provided by react-hook-form.
+        </div>
+        <Form {...form}>
+          {/* To access all properties and methods of useForm hook if we not passed that it will throw error syaing The Form component from Shadcn expects a prop that conforms to UseFormReturn, which is the return type of useForm() from react-hook-form. However, if you only pass children, it will complain that the required properties from UseFormReturn (like watch, setValue, etc.) are missing.*/}
+          <form onSubmit={form.handleSubmit(submitform)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                /**render  prop   is a function that receives an object with properties provided by react-hook-form.
                   This function is called with an object that contains properties you can use, such as field, fieldState, and formState.
                   I am not directly using that object I am doing destructuring here to directly access field property of an object or else if we not used that render={(props) => {
                     const field = props.field; we have to do like this so for conciseness we used destructuring  */
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="username"
-                        onChange={(e) => {
-                          field.onChange(e);
-                          debounced(e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                    {/* It is a wrapper component used to manage form input components like <Input>, <Select>, etc.  */}
-                    {ischeckingusername && (
-                      <Loader2 className="animate-spin"></Loader2>
-                    )}
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="username"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        debounced(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                  {/* It is a wrapper component used to manage form input components like <Input>, <Select>, etc.  */}
+                  {ischeckingusername && (
+                    <Loader2 className="animate-spin"></Loader2>
+                  )}
 
-                    <p
-                      className={`text-sm ${
-                        usernamereqmsg === "Username is unique"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {usernamereqmsg}
-                    </p>
+                  <p
+                    className={`text-sm ${
+                      usernamereqmsg === "Username is unique"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {usernamereqmsg}
+                  </p>
 
-                    <FormMessage />
-                    {/* The above  component is used to display validation messages or feedback based on the form field's state. */}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="email" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        placeholder="password"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormMessage />
+                  {/* The above  component is used to display validation messages or feedback based on the form field's state. */}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="email" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password" placeholder="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-center">
               <Button disabled={issubmitting} className="space-y-16">
                 {issubmitting ? (
                   <>
@@ -215,12 +210,14 @@ You prevent type errors within the function, e.g., accessing values.username is 
                   "SignUp"
                 )}
               </Button>
-            </form>
-          </Form>
+            </div>
+          </form>
+        </Form>
+        <div className="flex justify-center">
           <p>
             Already a member?&nbsp;
             <Link href="/sign-in" className="text-blue-500 hover:text-blue-900">
-              Signin
+              Sign in
             </Link>
           </p>
         </div>
