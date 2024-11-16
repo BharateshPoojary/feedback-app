@@ -16,8 +16,8 @@ Session settings (e.g., session strategy, expiration) */
     CredentialsProvider({
       credentials: {
         //Defines input fields required for login—username for the email or username, and password.
-        username: { label: "Username or email" },
-        password: { label: "Password", type: "password" },
+        Identifier: {},
+        password: {},
       },
       async authorize(credentials: any): Promise<any> {
         //A function to handle custom logic for authenticating users when they log in.
@@ -75,7 +75,7 @@ Session settings (e.g., session strategy, expiration) */
       return session;
     },
   },
-  pages: { signIn: "/sign-in" }, //using authjs builtin signin page(seems to be wrong here )
+  pages: { signIn: "/sign-in" }, //// Redirects to a custom sign-in page which is present in specified route
   session: { strategy: "jwt" }, //using jwt for storing the session data or else we can use database as well
   secret: process.env.NEXTAUTH_URL, //This is a very important credential in order to use auth
 };
