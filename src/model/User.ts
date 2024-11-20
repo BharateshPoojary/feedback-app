@@ -9,6 +9,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface Message extends Document {
   //In Mongoose with TypeScript, extending Document in your interface is necessary because it gives the Message interface all the properties and methods that a Mongoose document provides.
   //By extending Document, you ensure that TypeScript recognizes these properties and methods on any instance of Message. Without extending Document, TypeScript wouldn’t be aware of them, and you would encounter type errors when trying to use them properties and methods like _id and save() respectively
+  _id: string; //it may cause type mimatch BE CAREFUL
   content: string; //ts string is in smallcase
   createdAt: Date;
 }

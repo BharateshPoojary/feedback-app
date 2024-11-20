@@ -7,15 +7,15 @@ type MessageCardProps = {
   message: Message;
   onMessageDelete: (messageId: string) => void;
 };
-const MessageCard = ({ message, onMessageDelete }): MessageCardProps => {
+const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const { toast } = useToast();
   const handleDelete = async () => {
     const response = await axios.delete<ApiResponse>(
       `/api/delete-form/${message._id}`
     );
     toast({
-      success: true,
-      message: response.data.message,
+      title: "Success",
+      description: response.data.message,
     });
     onMessageDelete(message._id);
   };
