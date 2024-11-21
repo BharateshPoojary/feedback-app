@@ -3,6 +3,15 @@ import { Message } from "@/model/User";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios from "axios";
 import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 type MessageCardProps = {
   message: Message;
   onMessageDelete: (messageId: string) => void;
@@ -19,7 +28,17 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
     });
     onMessageDelete(message._id);
   };
-  return <div></div>;
+  return (
+    <div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>Card Description</CardDescription>
+        </CardHeader>
+        <CardContent></CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default MessageCard;
