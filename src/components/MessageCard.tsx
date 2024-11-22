@@ -33,12 +33,12 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const handleDelete = async () => {
     //handling delete route
     const response = await axios.delete<ApiResponse>(
-      `/api/delete-form/${message._id}`
+      `/api/delete-message/${message._id}`
     ); //sending the messageId in url params
     toast({
       title: response.data.message,
     });
-    onMessageDelete(message._id);
+    onMessageDelete(message._id); //function for accessing the messageId from other components and (sending it to the params for deleting from DB)
   };
   return (
     <div>
@@ -47,6 +47,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           <CardTitle>Card Title</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
+              {/*<AlertDialogTrigger asChild> is used to customize or replace the default trigger element. This pattern allows you to use your own element (e.g., a button or link) as the trigger for opening the dialog, rather than the library's default trigger styling and behavior. When you pass the asChild prop, it means the component will not create its own wrapper DOM element for the trigger. Instead, the child element you provide becomes the actual element used in the DOM, and the library's behavior (e.g., event listeners or ARIA attributes) is attached to this child element directly. This helps you avoid unnecessary additional DOM nodes and gives you more control over styling and structure. */}
               <Button variant="destructive">
                 <X className="w-5 h-5" />
               </Button>
