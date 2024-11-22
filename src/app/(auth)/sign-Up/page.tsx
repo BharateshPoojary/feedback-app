@@ -132,7 +132,7 @@ You prevent type errors within the function, e.g., accessing values.username is 
           <p className="mb-4">Sign up to start your feedback adventure</p>
         </div>
         <Form {...form}>
-          {/* To access all properties and methods of useForm hook if we not passed that it will throw error syaing The Form component from Shadcn expects a prop that conforms to UseFormReturn, which is the return type of useForm() from react-hook-form. However, if you only pass children, it will complain that the required properties from UseFormReturn (like watch, setValue, etc.) are missing.*/}
+          {/* To access all properties and methods of useForm hook if we not passed that it will throw error saying The Form component from Shadcn expects a prop that conforms to UseFormReturn, which is the return type of useForm() from react-hook-form. However, if you only pass children, it will complain that the required properties from UseFormReturn (like watch, setValue, etc.) are missing.*/}
           <form onSubmit={form.handleSubmit(submitform)} className="space-y-6">
             <FormField
               control={form.control}

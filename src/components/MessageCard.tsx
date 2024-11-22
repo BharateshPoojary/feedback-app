@@ -1,4 +1,3 @@
-"use client";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/model/User";
 import { ApiResponse } from "@/types/ApiResponse";
