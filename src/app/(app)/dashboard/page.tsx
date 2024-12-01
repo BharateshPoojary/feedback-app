@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { z } from "zod";
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
@@ -50,14 +50,17 @@ const page = () => {
     }
   }, [setValue]); //This call back will only run when setValue changes to prevent unnecessary function calls
   const fetchMessages = useCallback(
+    //this function is for fetching all the messages
     async (refresh: boolean = false) => {
-      setIsLoading(true);
-      setIsSwitching(false);
+      //includes a parameter whose default value is false this is to ensure whether user clicked refresh button or not
+      setIsLoading(true); //loading the messages
+      // setIsSwitching(false);
       try {
-        const response = await axios.get<ApiResponse>("/api/get-messages");
-        setMessages(response.data.messages || []);
+        const response = await axios.get<ApiResponse>("/api/get-messages"); //getting all messages
+        setMessages(response.data.messages || []); //setting in setmessage array
 
         if (refresh) {
+          //if refreshed successfully then showing toast
           toast({
             title: "Refreshed",
             description: "showing latest messages",
@@ -68,17 +71,25 @@ const page = () => {
         toast({
           title: "Error",
           description:
-            axioserror.response?.data.message ||
-            "Failed to  fetch message settings",
-          variant: "destructive",
+            axioserror.response?.data.message || "Failed to  fetch messages",
         });
       } finally {
         setIsLoading(false);
-        setIsSwitching(false); //user switching is done
+        // setIsSwitching(false); //user switching is done
       }
     },
     [setIsLoading, setMessages]
   );
+  //calling the function on specific cases using useeffect
+  useEffect(() => {
+    if (session || session?.user) {
+      fetchMessages(); //TO ACCESS ALL MESSAGES
+      fetchAcceptMessage(); //TO VERIFY WHETHER USER IS ACCEPTING MESSAGE OR NOT
+    }
+    return;
+  }, [session, setValue, fetchAcceptMessage, fetchMessages]);
+
+  //HANDLING SWITCHING OF ACCEPT MESSAGE
   return <div></div>;
 };
 export default page;
