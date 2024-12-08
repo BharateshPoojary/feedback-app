@@ -44,7 +44,7 @@ const page = () => {
     setIsSwitching(true); //user is switching right now
     try {
       const response = await axios.get<ApiResponse>("/api/accept-messages"); //accessing the user's accepting message which is boolean
-      setValue("acceptMessages", response.data.isAcceptingMessage); //set ValueProgrammatically updates the value of a field.
+      setValue("acceptMessages", response.data.isAcceptingMessages as boolean); //set ValueProgrammatically updates the value of a field.
       //This function allows you to dynamically set the value of a registered field and have the options to validate and update the form state.
     } catch (error) {
       const axioserror = error as AxiosError<ApiResponse>;

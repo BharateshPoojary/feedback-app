@@ -9,14 +9,14 @@ declare module "next-auth" {
     user: {
       _id?: string;
       isVerified?: boolean;
-      isAcceptingMessage?: boolean;
+      isAcceptingMessages?: boolean;
       username?: string;
     } & DefaultSession["user"]; // you’re importing DefaultSession from NextAuth to keep the standard properties and then extending it with custom fields
   }
   interface User {
     _id?: string;
     isVerified?: boolean;
-    isAcceptingMessage?: boolean;
+    isAcceptingMessages?: boolean;
     username?: string;
   }
 }
@@ -26,7 +26,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     _id?: string;
     isVerified?: boolean;
-    isAcceptingMessage?: boolean;
+    isAcceptingMessages?: boolean;
     username?: string;
   }
 }

@@ -94,7 +94,7 @@ export async function GET() {
     return Response.json(
       {
         success: true,
-        isAcceptingMessage: accessing_userid.isAcceptingMessage, //accessing the users isAcceptingMessage Property
+        isAcceptingMessages: accessing_userid.isAcceptingMessages, //accessing the users isAcceptingMessage Property
       },
       { status: 200 }
     );
