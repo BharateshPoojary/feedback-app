@@ -44,9 +44,11 @@ const page = () => {
     setIsSwitching(true); //user is switching right now
     try {
       const response = await axios.get<ApiResponse>("/api/accept-messages"); //accessing the user's accepting message which is boolean
-      setValue("acceptMessages", response.data.isAcceptingMessages as boolean); //set ValueProgrammatically updates the value of a field.
+      setValue("acceptMessages", response.data.isAcceptingMessages ?? false); //here i have a provided default value using the ?? operator, which ensures undefined (or null) gets replaced by a fallback value:
+      //set ValueProgrammatically updates the value of a field.
       //This function allows you to dynamically set the value of a registered field and have the options to validate and update the form state.
     } catch (error) {
+      //handling error if there is any error while getting acceptmessage value
       const axioserror = error as AxiosError<ApiResponse>;
       toast({
         title: "Error",
@@ -102,36 +104,41 @@ const page = () => {
   //HANDLING SWITCHING OF ACCEPT MESSAGE
   const handleSwitchChange = async () => {
     try {
-      const responseForSwitchingAcceptMessage = await axios.post<ApiResponse>(
+      const responseForSwitchingAcceptMessage = await axios.post<ApiResponse>( //this api request is for sending the user accepting message property
         "/api/accept-messages",
         {
-          acceptMessage: !acceptMessages,
+          acceptMessage: !acceptMessages, //when the user switch the message accepting property if it is previously true then it will send false or vice versa
         }
       );
       if (responseForSwitchingAcceptMessage) {
-        setValue("acceptMessages", !acceptMessages);
+        setValue("acceptMessages", !acceptMessages); //if the switching is done in server side then we will also reflect it in client side by setting its value
         toast({
           title: responseForSwitchingAcceptMessage.data.message,
           variant: "default",
         });
       }
     } catch (error) {
-      const axioserror = error as AxiosError<ApiResponse>;
+      const axioserror = error as AxiosError<ApiResponse>; //in case any error while switching
       toast({
         title: "Error",
         description:
           axioserror.response?.data.message ||
-          "Failed to  fetch message settings",
+          "Failed to  switch message settings",
         variant: "destructive",
       });
     }
   };
-  const { username } = session?.user as User;
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const profileUrl = `${baseUrl}/u/${username}`;
+  const { username } = session?.user; //accessing user name
+  const baseUrl = `${window.location.protocol}//${window.location.host}`; /*window.location.protocol:
+  Specifies the protocol used in the URL (e.g., http: or https:). 
+  window.location.host:
+  Specifies the hostname and port number of the URL (e.g., example.com:8080).*/
+  const profileUrl = `${baseUrl}/u/${username}`; //profile url of the particular user which he can give to any one an they may send anonymous messages to him
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(profileUrl);
+    //function for handling copying the profile url
+    navigator.clipboard.writeText(profileUrl); //writeText: Copies the provided string to the clipboard
     toast({
+      //sending toast message after copying
       title: "Success",
       description: "URL Copied to Clipboard",
     });
@@ -144,52 +151,68 @@ const page = () => {
         <div className="flex items-center">
           <input
             type="text"
-            value={profileUrl}
-            disabled
+            value={profileUrl} //profile url will be by default a  value to this input tag which this logged in user can copy
+            disabled //it is disabled as user cannot edit this input only can copy
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard}>Copy</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>{" "}
+          {/* button for copying to clipboard*/}
         </div>
       </div>
 
       <div className="mb-4">
         <Switch
-          {...register("acceptMessages")}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitching}
+          {...register(
+            "acceptMessages"
+          )} /*{...register("acceptMessages")}: This is a function from a library like React Hook Form.
+          It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form.*/
+          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it si true which means user is accepting message or vice versa
+          onCheckedChange={handleSwitchChange} // A callback function (handleSwitchChange) that handles toggling logic when the switch is clicked or toggled.
+          disabled={
+            isSwitching
+          } /*Controls whether the switch is interactive or not.
+          When disabled is true, the user cannot toggle the switch. This is controlled by the isSwitching state.*/
         />
         <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}
+          Accept Messages: {acceptMessages ? "On" : "Off"}{" "}
+          {/*  Displays text that reflects the current state of acceptMessages:
+            If acceptMessages is true, it shows "Accept Messages: On".
+            If false, it shows "Accept Messages: Off". */}
         </span>
       </div>
       <Separator />
+      {/* a line from shadcn to separate the ui components    */}
 
       <Button
         className="mt-4"
         variant="outline"
         onClick={(e) => {
           e.preventDefault();
-          fetchMessages(true);
+          fetchMessages(true); //this is a button for refreshing generally to get new messaeges its a function which will run it considers true argument to make refresh true and sending toast message
         }}
       >
-        {isLoading ? (
+        {isLoading ? ( //when the loading is true it will show loader
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <RefreshCcw className="h-4 w-4" />
+          <RefreshCcw className="h-4 w-4" /> //or else if not loading then refresh button so that user can refresh
         )}
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {Messages.length > 0 ? (
-          Messages.map((message, index) => (
-            <MessageCard
-              key={message._id}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
+        {Messages.length > 0 ? ( //if messagelength is >0
+          Messages.map(
+            (
+              message,
+              index //mapping through each messages
+            ) => (
+              <MessageCard //showing message card for each message
+                key={message._id} //to uniquely identify each message
+                message={message} //this is the actual message we are displaying
+                onMessageDelete={handleDeleteMessage} //function for handling deletion of message
+              />
+            )
+          )
         ) : (
-          <p>No messages to display.</p>
+          <p>No messages to display.</p> //if no messages to display
         )}
       </div>
     </div>
