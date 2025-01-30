@@ -60,7 +60,7 @@ Session settings (e.g., session strategy, expiration) */
         //storing the user data in payload
         token._id = user._id?.toString(); //converting object id to string
         token.isVerified = user.isVerified;
-        token.isAcceptingMessage = user.isAcceptingMessage;
+        token.isAcceptingMessage = user.isAcceptingMessages;
         token.username = user.username;
       }
       return token;
@@ -69,7 +69,7 @@ Session settings (e.g., session strategy, expiration) */
       if (token) {
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
-        session.user.isAcceptingMessage = token.isAcceptingMessage;
+        session.user.isAcceptingMessages = token.isAcceptingMessage;
         session.user.username = token.username;
       }
       return session;

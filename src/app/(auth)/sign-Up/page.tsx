@@ -1,8 +1,8 @@
 //Client Components allow you to write interactive UI that is prerendered on the server and can use client JavaScript to run in the browser.
 "use client";
+/**However, "use client" doesn't need to be defined in every component that needs to be rendered on the client. Once you define the boundary, all child components and modules imported into it are considered part of the client bundle.  */
 /**To use Client Components, you can add the React "use client" directive at the top of a file, above your imports.
-
-"use client" is used to declare a boundary between a Server and Client Component modules. This means that by defining a "use client" in a file, all other modules imported into it, including child components, are considered part of the client bundle. */
+"use client" is used to declare a boundary between a Server and Client Component modules. */
 import { zodResolver } from "@hookform/resolvers/zod";
 //zodResolver is used to integrate the Zod schema validation library with react-hook-form. It allows you to use Zod for form validation. When using react-hook-form, this resolver validates the form inputs against a Zod schema.
 import { useForm } from "react-hook-form";
@@ -50,8 +50,8 @@ const page = () => {
   const router = useRouter(); //router for routing from one direction to another
   const form = useForm<z.infer<typeof signUpSchemaValidation>>({
     /**z.infer is a utility provided by the Zod library.
-It infers and extracts the TypeScript type from a Zod schema.
-Essentially, it converts your Zod validation schema into a TypeScript type. */
+    It infers and extracts the TypeScript type from a Zod schema.
+    Essentially, it converts your Zod validation schema into a TypeScript type. */
     //implementing zod validation on our react hook form
     resolver: zodResolver(signUpSchemaValidation), //zodResolver ,for wrapping our form fields with specific  validation
     defaultValues: {
@@ -160,11 +160,10 @@ You prevent type errors within the function, e.g., accessing values.username is 
                   )}
 
                   <p
-                    className={`text-sm ${
-                      usernamereqmsg === "Username is unique"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
+                    className={`text-sm ${usernamereqmsg === "Username is unique"
+                      ? "text-green-500"
+                      : "text-red-500"
+                      }`}
                   >
                     {usernamereqmsg}
                   </p>

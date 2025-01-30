@@ -12,7 +12,7 @@ const dbConnection = async (): Promise<void> => {
   }
   try {
     const dbConnect = await mongoose.connect(process.env.MONGODB_URI || "", {});
-    //If the connection is not done properly it will return an empty string leading to an error
+    //If the connection is not done properly it will consider an empty string of right side  leading to an error
     //{} inside this braces we can give optional properties
     Connection.isConnected = dbConnect.connections[0].readyState;
     console.log("connected to mongoDB successfully");

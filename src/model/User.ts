@@ -86,11 +86,15 @@ const UserSchema: Schema<User> = new Schema({
 const UserModel =
   (mongoose.models.User as mongoose.Model<User>) ||
   mongoose.model<User>("User", UserSchema);
+
 //here is 2 condition if User Model is  already present   it will be selected among the multiple models
 //or else It will create a new model
 /**is casting mongoose.models.User to be of type mongoose.Model<User>. Here’s a breakdown of what each part does:
 mongoose.models.User:
 This is typically an object managed by Mongoose that stores any models that have already been created. If User has already been defined as a model, it will be available in mongoose.models.User.
 as mongoose.Model<User>:This part is a TypeScript type assertion (casting), which tells TypeScript to treat mongoose.models.User as a mongoose.Model<User> type.
-mongoose.Model<User> means that the UserModel object should conform to the shape of a Mongoose model where the generic type User represents the structure of each document within the collection. */
+mongoose.Model<User> means that the UserModel object should conform to the shape of a Mongoose model where the generic type User represents the structure of each document within the collection. 
+Model (User): Represents a blueprint for documents in MongoDB.
+Collection (users): Automatically created and used to store documents for the User model.
+Schema (userSchema): Defines the structure of documents inside the collection.*/
 export default UserModel;
