@@ -42,7 +42,6 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
     } else {
       //if  user exist by this username
       if (isExisting_user_by_this_username) {
-        console.log("I exist");
         if (isExisting_user_by_this_username.isVerified) {
           return Response.json(
             { success: false, message: "Username already exists" },
@@ -54,7 +53,7 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
             hashedpasswordfornewpassword;
           isExisting_user_by_this_username.verifyCode = verifyCode;
           isExisting_user_by_this_username.verifyCodeExpiry = ExpiryDate;
-          console.log("Log defore save");
+
           await isExisting_user_by_this_username.save();
         }
       } else {
@@ -82,7 +81,7 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
     if (!verificationemail.success) {
       return Response.json(
         { success: false, message: verificationemail.message },
-        { status: 500 }
+        { status: 500 } //Internal server error
       );
     } else {
       return Response.json(
@@ -90,7 +89,7 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
           success: true,
           message: verificationemail.message,
         },
-        { status: 201 }
+        { status: 201 } //New resource created
       );
     }
   } catch (error) {

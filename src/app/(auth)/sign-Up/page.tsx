@@ -150,6 +150,9 @@ const page = () => {
                   <FormControl>
                     <Input
                       {...field}//accessing all the properties 
+                      //this field object includes various properties which handles the form field on behalf of us 
+                      //no need to explicitly call on Change to handle unless and until it is required for some more
+                      //field specific work  
                       placeholder="username"
                       onChange={(e) => {
                         field.onChange(e);
