@@ -12,30 +12,24 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
   try {
     const { userName, email, password } = await request.json();
     /**This part waits for the JSON content of the incoming request to be parsed. The request.json() method reads the body of the request as JSON, which is typically used when the request's body contains JSON data (like {"username": "example", "email": "example@example.com", "password": "securepassword"}). */
-    const isExisting_user_by_this_username = await UserModel.findOne({
-      username: userName,
-      isVerified: true,
-    });
-    //if  user exist by this username
-    if (isExisting_user_by_this_username) {
-      return Response.json(
-        { success: false, message: "Username already exists" },
-        { status: 409 }
-      );
-    }
-    const Existing_user_by_this_email = await UserModel.findOne({
-      email: email,
-    });
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     const ExpiryDate = new Date();
+
+    const isExisting_user_by_this_username = await UserModel.findOne({
+      username: userName,
+    });
+    const Existing_user_by_this_email = await UserModel.findOne({
+      useremail: email,
+    });
     ExpiryDate.setHours(ExpiryDate.getHours() + 1);
     //if a user exist by this email
     if (Existing_user_by_this_email) {
       //if a user exist by this email and is verified
+      console.log("Email existing but not verified");
       if (Existing_user_by_this_email.isVerified) {
         return Response.json(
           { success: false, message: "User with this email already exists" },
-          { status: 409 }
+          { status: 409 } //duplicate resource is being created where uniqueness is required
         );
       } else {
         //if a user exist by this email and is  not verified which means he is updating  his password
@@ -43,21 +37,41 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
         Existing_user_by_this_email.password = hashedpasswordfornewpassword;
         Existing_user_by_this_email.verifyCode = verifyCode;
         Existing_user_by_this_email.verifyCodeExpiry = ExpiryDate;
+        await Existing_user_by_this_email.save(); // Save updates to DB
       }
     } else {
-      //if a user does not exist then regsitering a new user
-      const hashedpassword = await bcrypt.hash(password, 10);
-      const creatingnewuser = new UserModel({
-        username: userName,
-        useremail: email,
-        password: hashedpassword,
-        verifyCode: verifyCode,
-        verifyCodeExpiry: ExpiryDate,
-        isVerified: false,
-        isAcceptingMessage: true,
-        message: [],
-      });
-      await creatingnewuser.save();
+      //if  user exist by this username
+      if (isExisting_user_by_this_username) {
+        console.log("I exist");
+        if (isExisting_user_by_this_username.isVerified) {
+          return Response.json(
+            { success: false, message: "Username already exists" },
+            { status: 409 } //duplicate resource is being created where uniqueness is required
+          );
+        } else {
+          const hashedpasswordfornewpassword = await bcrypt.hash(password, 10);
+          isExisting_user_by_this_username.password =
+            hashedpasswordfornewpassword;
+          isExisting_user_by_this_username.verifyCode = verifyCode;
+          isExisting_user_by_this_username.verifyCodeExpiry = ExpiryDate;
+          console.log("Log defore save");
+          await isExisting_user_by_this_username.save();
+        }
+      } else {
+        //if a user does not exist then regsitering a new user
+        const hashedpassword = await bcrypt.hash(password, 10);
+        const creatingnewuser = new UserModel({
+          username: userName,
+          useremail: email,
+          password: hashedpassword,
+          verifyCode: verifyCode,
+          verifyCodeExpiry: ExpiryDate,
+          isVerified: false,
+          isAcceptingMessage: true,
+          message: [],
+        });
+        await creatingnewuser.save();
+      }
     }
 
     const verificationemail = await sendverificationemail(
