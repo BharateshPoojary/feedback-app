@@ -33,7 +33,7 @@ const verifyAccount = () => {
     try {
       const response = await axios.post("/api/verifycode", {
         username: params.username,
-        otp: data.code,//made cahnge here check
+        otp: { code: data.code },
       });
 
       toast({

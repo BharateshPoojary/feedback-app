@@ -25,9 +25,9 @@ const page = () => {
   const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInSchema),//integrates the Zod schema validation with the form validation process
     defaultValues: {
-      Identifier: "",
+      Identifier: "",//Identifier can be username or email
       password: "",
     },
   });

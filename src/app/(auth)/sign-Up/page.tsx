@@ -188,7 +188,14 @@ const page = () => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="email" />
-                    {/* Input element from shadcn ui require access to all properstieof field to work as html input tag */}
+                    {/* Input element from shadcn ui has various attributes like  a typical input tag is having like onChange ,ref, value etc field is a prop sent to input component which includes various objects  typically used to control the input tag .By using spread operator we are directly accessing those object and assigning it to particular attribute of Input tag so that react hook form can handle and can have control over  the field   
+                    or else we have to do like  <Input 
+            value={field.value} 
+            onChange={field.onChange} 
+            onBlur={field.onBlur} 
+            ref={field.ref} 
+            placeholder="username/email" 
+          /> this*/}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
