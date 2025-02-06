@@ -27,7 +27,7 @@ const page = () => {
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),//integrates the Zod schema validation with the form validation process
     defaultValues: {
-      Identifier: "",//Identifier can be username or email
+      identifier: "",//Identifier can be username or email
       password: "",
     },
   });
@@ -35,9 +35,10 @@ const page = () => {
     setIsSubmitting(true);
     const result = await signIn("credentials", {
       redirect: false,
-      Identifier: data.Identifier,
+      identifier: data.identifier,
       password: data.password,
     });
+    console.log("Result after signIn", result)
     if (result?.error) {
       if (result.error === "CredentialsSignin") {
         toast({
@@ -58,6 +59,7 @@ const page = () => {
     if (result?.url) {
       //This indicates the URL to which the user should be redirected after a successful sign-in.
       console.log(result.url);
+
       setIsSubmitting(false);
       router.replace("/dashboard");
     }
@@ -76,7 +78,7 @@ const page = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="Identifier"
+              name="identifier"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username/Email</FormLabel>

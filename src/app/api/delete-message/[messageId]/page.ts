@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 /**getServerSession() is a function provided by NextAuth to fetch the session data on the server side in Next.js.
 It takes in the authentication options (authOptions), which typically include your configured providers, callbacks, and session settings.
 This function returns the session object containing the authenticated user's data, including user information and any custom properties you might have added to the session or JWT */
-import { authOptions } from "../../auth/[...nextauth]/options";
+import { authOptions } from "../../../../lib/options";
 export async function DELETE({ params }: { params: { messageId: string } }) {
   //As DELETE request contains messageId in parameter accessing the messageId and specifying the type of messageId . This is custom type we are { params: { messageId: string } } specifying we have to pass like this only params which has messageId of type string.This is the { params } parameter which includes messageId.
   const messageId = params.messageId; //accessing messsageId and saving it in a variable

@@ -18,6 +18,7 @@ const page = () => {
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
+  const { data: session } = useSession(); //To retrieve session data
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -26,7 +27,6 @@ const page = () => {
   //and filters from the messages array and display the filtered one at that time only
   //here we are following optimistic approach fom db we will delete it later on using its Id
   //Like in Instagram the like is happened at that time only but it is reflected on server later on
-  const { data: session } = useSession(); //To retrieve session data
   if (!session || !session?.user) {
     return <div>Please Login</div>;
   }
