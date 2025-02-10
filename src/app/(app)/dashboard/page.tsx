@@ -18,7 +18,7 @@ const page = () => {
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
-  const { data: session } = useSession(); //To retrieve session data
+  const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth]
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -27,9 +27,6 @@ const page = () => {
   //and filters from the messages array and display the filtered one at that time only
   //here we are following optimistic approach fom db we will delete it later on using its Id
   //Like in Instagram the like is happened at that time only but it is reflected on server later on
-  if (!session || !session?.user) {
-    return <div>Please Login</div>;
-  }
   const form = useForm<z.infer<typeof acceptMessageSchema>>({
     resolver: zodResolver(acceptMessageSchema),
   }); //using useForm in order to ensure or get the user behavior  whether user is accepting message or not using a switch in a form
@@ -128,6 +125,12 @@ const page = () => {
       });
     }
   };
+
+  console.log("User Session", session);//here 
+  if (!session || !session?.user) return;
+  //Once we get session after that we will safely retrieve the username
+  //here our if is like a boundary it will check if the session is present or not if notit will be returned from here only 
+
   const { username } = session?.user; //accessing user name
   const baseUrl = `${window.location.protocol}//${window.location.host}`; /*window.location.protocol:
   Specifies the protocol used in the URL (e.g., http: or https:). 
@@ -143,6 +146,7 @@ const page = () => {
       description: "URL Copied to Clipboard",
     });
   };
+
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>

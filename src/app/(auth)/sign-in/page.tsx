@@ -34,7 +34,7 @@ const page = () => {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
     const result = await signIn("credentials", {
-      redirect: false,
+      redirect: false,// if true,redirection work will be done by next auth 
       identifier: data.identifier,
       password: data.password,
     });

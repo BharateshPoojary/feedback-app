@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import dbConnection from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import type { NextAuthOptions } from "next-auth";
+import { User } from "@/model/User";
 // we can place options.ts file anywhere but the thing is it should be injected inside the [...nextauth] file
 //as here we are just writing options after wards it will be injected in a route where it will actual work as API
 export const authOptions: NextAuthOptions = {

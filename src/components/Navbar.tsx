@@ -19,7 +19,7 @@ const Navbar = () => {
                 Welcome,{user.username || user.email}
               </span>
               <Button
-                onClick={() => signOut}
+                onClick={() => signOut()}
                 className="p-1 bg-slate-100 text-black"
               >
                 Logout
