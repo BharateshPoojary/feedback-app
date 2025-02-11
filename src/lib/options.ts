@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
           const user = await UserModel.findOne({
             $or: [
               // $or: A MongoDB operator that checks if either the email or username matches the identifier provided.
-              { email: credentials.identifier },
+              { useremail: credentials.identifier },
               { username: credentials.identifier }, //identifier can refer to email or username
             ],
           });
@@ -63,11 +63,9 @@ export const authOptions: NextAuthOptions = {
     //Callbacks are asynchronous functions you can use to control what happens when an action is performed(ACTION Like SIGNIN,accessing session data etc ).
 
     async jwt({ token, user }) {
-      //this a user object jwt callback is getting from session token
       /**This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated (i.e whenever a session is accessed in the client). The returned value will be encrypted, and it is stored in a cookie. Requests to /api/auth/signin, /api/auth/session and calls to getSession(), getServerSession(), useSession() will invoke this function, but only if you are using a JWT session. This method is not invoked when you persist sessions in a database.JSON Web Tokens can be used for generating session tokens if enabled with session: { strategy: "jwt" } option.*/
       if (user) {
-        //In first we will not have user it is returned by session token later
-        /**The arguments LIKE  user (WE USED HERE ), account, profile and isNewUser are only passed the first time this callback is called on a new session, after the user signs in. In subsequent calls, only token will be available. AND IT WILL BE RETURNED .
+        /**The arguments LIKE  user (WE USED HERE ), account, profile and isNewUser are only passed the first time this callback is called at the time of creating a  new session, after the user signs in. In subsequent calls, only token will be available. AND IT WILL BE RETURNED .
         The contents user, account, profile and isNewUser will vary depending on the provider and if you are using a database. You can persist data such as User ID, OAuth Access Token in this token 
         Use an if branch to check for the existence of parameters (apart from token). If they exist, this means that the callback is being invoked for the first time (i.e. the user is being signed in). This is a good place to persist additional data like an access_token in the JWT. Subsequent invocations will only contain the token parameter.*/
         //storing the user data in payload
@@ -78,8 +76,8 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
       }
       console.log("Final JWT Token:", token);
-      return token; // we will update the token with user data (came from session token ) by storing it in seperate key inside token  as we did above
-      //returning the token which then will be stored in cookie and we can access it in browser
+      return token; // we will update the token with user data  by storing it in seperate key inside token  as we did above
+      //returning the token which then will be stored in cookie and session  callback can access this now
     },
     //session we get by default in call backs ( When the authorize is true)
     async session({ session, token }) {
@@ -96,7 +94,7 @@ When using JSON Web Tokens for sessions, the JWT payload (token) is provided ins
         session.user.username = token.username;
       }
       console.log("Final Session:", session);
-      return session; //Now here session will contain user object and this object conatins jwt data which is accessible everywhere
+      return session; //Now here session will contain user object and this object contains jwt data which is accessible everywhere
     },
   },
   pages: { signIn: "/sign-in", error: "/sign-in" }, // Redirects to a custom sign-in page which is present in specified route

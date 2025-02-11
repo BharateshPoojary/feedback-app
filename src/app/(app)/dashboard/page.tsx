@@ -151,7 +151,7 @@ const page = () => {
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
       <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{" "}
+        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
         <div className="flex items-center">
           <input
             type="text"
@@ -159,7 +159,7 @@ const page = () => {
             disabled //it is disabled as user cannot edit this input only can copy
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard}>Copy</Button>{" "}
+          <Button onClick={copyToClipboard}>Copy</Button>
           {/* button for copying to clipboard*/}
         </div>
       </div>
@@ -169,8 +169,8 @@ const page = () => {
           {...register(
             "acceptMessages"
           )} /*{...register("acceptMessages")}: This is a function from a library like React Hook Form.
-          It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form.*/
-          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it si true which means user is accepting message or vice versa
+          It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form. (registering the switch as form field with the name as "acceptMessages" )*/
+          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it is true which means user is accepting message or vice versa
           onCheckedChange={handleSwitchChange} // A callback function (handleSwitchChange) that handles toggling logic when the switch is clicked or toggled.
           disabled={
             isSwitching
@@ -178,7 +178,7 @@ const page = () => {
           When disabled is true, the user cannot toggle the switch. This is controlled by the isSwitching state.*/
         />
         <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}{" "}
+          Accept Messages: {acceptMessages ? "On" : "Off"}
           {/*  Displays text that reflects the current state of acceptMessages:
             If acceptMessages is true, it shows "Accept Messages: On".
             If false, it shows "Accept Messages: Off". */}
@@ -205,8 +205,7 @@ const page = () => {
         {Messages.length > 0 ? ( //if messagelength is >0
           Messages.map(
             (
-              message,
-              index //mapping through each messages
+              message
             ) => (
               <MessageCard //showing message card for each message
                 key={message._id} //to uniquely identify each message

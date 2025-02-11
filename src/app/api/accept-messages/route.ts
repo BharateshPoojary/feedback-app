@@ -3,7 +3,7 @@ import UserModel from "@/model/User";
 import { getServerSession } from "next-auth";
 /**getServerSession() is a function provided by NextAuth to fetch the session data on the server side in Next.js.
 It takes in the authentication options (authOptions), which typically include your configured providers, callbacks, and session settings.
-This function returns the session object containing the authenticated user's data, including user information and any custom properties you might have added to the session or JWT */
+This function returns the session object containing the authenticated user's data, including user information and any custom properties you might have added to the  JWT */
 import { authOptions } from "../../../lib/options";
 //POST request is for updating the user isAcceptingMessage property
 export async function POST(request: Request) {
