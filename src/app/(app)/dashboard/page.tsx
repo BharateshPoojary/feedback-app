@@ -18,7 +18,8 @@ const page = () => {
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
-  const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth]
+  const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth](client side)
+  //data property contain session now we can use this session property 
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -92,8 +93,8 @@ const page = () => {
   //calling the function on specific cases using useeffect
   useEffect(() => {
     if (!session || !session?.user) return;
-    fetchMessages(); //TO ACCESS ALL MESSAGES
-    fetchAcceptMessage(); //TO VERIFY WHETHER USER IS ACCEPTING MESSAGE OR NOT
+    fetchMessages(); //TO ACCESS ALL MESSAGES  IT WILL MAKE A GET REQUEST
+    fetchAcceptMessage(); //TO VERIFY WHETHER USER IS ACCEPTING MESSAGE OR NOT IT WILL MAKE A GET REQUEST
 
     return;
   }, [session, setValue, fetchAcceptMessage, fetchMessages]);
@@ -107,6 +108,7 @@ const page = () => {
           acceptMessage: !acceptMessages, //when the user switch the message accepting property if it is previously true then it will send false or vice versa
         }
       );
+      // console.log("Response for switching", responseForSwitchingAcceptMessage.data);//It will retuen the whole document
       if (responseForSwitchingAcceptMessage) {
         setValue("acceptMessages", !acceptMessages); //if the switching is done in server side then we will also reflect it in client side by setting its value
         toast({

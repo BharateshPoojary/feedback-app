@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         success: false,
         message: "User is not authenticated",
       },
-      { status: 401 }
+      { status: 401 } //not authenticated
     );
   }
   try {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       await UserModel.findByIdAndUpdate(
         _id,
         {
-          isAcceptingMessage: acceptMessage, //updating isAcceptingMessage property  of the specified user
+          isAcceptingMessages: acceptMessage, //updating isAcceptingMessage property  of the specified user
         },
         { new: true } //This property is for returning the new updated document
       );

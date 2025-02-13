@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
-    if (!usernameinDB.isAcceptingMessage) {
+    if (!usernameinDB.isAcceptingMessages) {
       //verifying whether users isAcceptingMessage property is set to false if false then sending the no accepting message ressponse
       return Response.json(
         {

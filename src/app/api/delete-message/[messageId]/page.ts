@@ -7,6 +7,7 @@ This function returns the session object containing the authenticated user's dat
 import { authOptions } from "../../../../lib/options";
 export async function DELETE({ params }: { params: { messageId: string } }) {
   //As DELETE request contains messageId in parameter accessing the messageId and specifying the type of messageId . This is custom type we are { params: { messageId: string } } specifying we have to pass like this only params which has messageId of type string.This is the { params } parameter which includes messageId.
+  //normally we get request but we destructured it to directly access so directly used params
   const messageId = params.messageId; //accessing messsageId and saving it in a variable
   await dbConnection();
   const accessing_session = await getServerSession(authOptions); //Accessing the session by passing authOptions to it which includes providers , callback etc
