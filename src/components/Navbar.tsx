@@ -10,9 +10,11 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="p-4 md:p-7 shadow-md bg-gray-900 text-white h-24">
-        <div className="container flex flex-col md:flex-row  justify-between items-center">
-          <span className="text-4xl">Bharat Feedback App</span>
+      <nav className="w-screen p-4 md:p-7 shadow-md bg-gray-900 rounded-br-full text-white h-24 flex  items-center">
+        <div className="container flex flex-row  justify-between items-center">
+          <span className="text-xl min-[357px]:text-2xl sm:text-4xl">
+            Bharat Feedback App
+          </span>
           {session ? (
             <>
               <span className="mr-4">
@@ -27,7 +29,7 @@ const Navbar = () => {
             </>
           ) : (
             <Link href={"/sign-in"}>
-              <span className=" p-3 pr-6 pl-6 rounded-xl bg-slate-100 text-black">
+              <span className=" p-3 pr-6 pl-6 rounded-full bg-slate-100 text-black">
                 Login
               </span>
             </Link>
