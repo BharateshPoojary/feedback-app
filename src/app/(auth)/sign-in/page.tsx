@@ -25,19 +25,20 @@ const page = () => {
   const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInSchema),//integrates the Zod schema validation with the form validation process
     defaultValues: {
-      Identifier: "",
+      identifier: "",//Identifier can be username or email
       password: "",
     },
   });
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
     const result = await signIn("credentials", {
-      redirect: false,
-      Identifier: data.Identifier,
+      redirect: false,// if true,redirection work will be done by next auth 
+      identifier: data.identifier,
       password: data.password,
     });
+    console.log("Result after signIn", result)
     if (result?.error) {
       if (result.error === "CredentialsSignin") {
         toast({
@@ -58,6 +59,7 @@ const page = () => {
     if (result?.url) {
       //This indicates the URL to which the user should be redirected after a successful sign-in.
       console.log(result.url);
+
       setIsSubmitting(false);
       router.replace("/dashboard");
     }
@@ -76,7 +78,7 @@ const page = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="Identifier"
+              name="identifier"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username/Email</FormLabel>

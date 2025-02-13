@@ -18,6 +18,7 @@ const page = () => {
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
+  const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth]
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -26,10 +27,6 @@ const page = () => {
   //and filters from the messages array and display the filtered one at that time only
   //here we are following optimistic approach fom db we will delete it later on using its Id
   //Like in Instagram the like is happened at that time only but it is reflected on server later on
-  const { data: session } = useSession(); //To retrieve session data
-  if (!session || !session?.user) {
-    return <div>Please Login</div>;
-  }
   const form = useForm<z.infer<typeof acceptMessageSchema>>({
     resolver: zodResolver(acceptMessageSchema),
   }); //using useForm in order to ensure or get the user behavior  whether user is accepting message or not using a switch in a form
@@ -128,6 +125,12 @@ const page = () => {
       });
     }
   };
+
+  console.log("User Session", session);//here 
+  if (!session || !session?.user) return;
+  //Once we get session after that we will safely retrieve the username
+  //here our if is like a boundary it will check if the session is present or not if notit will be returned from here only 
+
   const { username } = session?.user; //accessing user name
   const baseUrl = `${window.location.protocol}//${window.location.host}`; /*window.location.protocol:
   Specifies the protocol used in the URL (e.g., http: or https:). 
@@ -143,11 +146,12 @@ const page = () => {
       description: "URL Copied to Clipboard",
     });
   };
+
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
       <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{" "}
+        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
         <div className="flex items-center">
           <input
             type="text"
@@ -155,7 +159,7 @@ const page = () => {
             disabled //it is disabled as user cannot edit this input only can copy
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard}>Copy</Button>{" "}
+          <Button onClick={copyToClipboard}>Copy</Button>
           {/* button for copying to clipboard*/}
         </div>
       </div>
@@ -165,8 +169,8 @@ const page = () => {
           {...register(
             "acceptMessages"
           )} /*{...register("acceptMessages")}: This is a function from a library like React Hook Form.
-          It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form.*/
-          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it si true which means user is accepting message or vice versa
+          It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form. (registering the switch as form field with the name as "acceptMessages" )*/
+          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it is true which means user is accepting message or vice versa
           onCheckedChange={handleSwitchChange} // A callback function (handleSwitchChange) that handles toggling logic when the switch is clicked or toggled.
           disabled={
             isSwitching
@@ -174,7 +178,7 @@ const page = () => {
           When disabled is true, the user cannot toggle the switch. This is controlled by the isSwitching state.*/
         />
         <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}{" "}
+          Accept Messages: {acceptMessages ? "On" : "Off"}
           {/*  Displays text that reflects the current state of acceptMessages:
             If acceptMessages is true, it shows "Accept Messages: On".
             If false, it shows "Accept Messages: Off". */}
@@ -201,8 +205,7 @@ const page = () => {
         {Messages.length > 0 ? ( //if messagelength is >0
           Messages.map(
             (
-              message,
-              index //mapping through each messages
+              message
             ) => (
               <MessageCard //showing message card for each message
                 key={message._id} //to uniquely identify each message

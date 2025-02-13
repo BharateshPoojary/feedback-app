@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 /**getServerSession() is a function provided by NextAuth to fetch the session data on the server side in Next.js.
 It takes in the authentication options (authOptions), which typically include your configured providers, callbacks, and session settings.
 This function returns the session object containing the authenticated user's data, including user information and any custom properties you might have added to the session or JWT */
-import { authOptions } from "../auth/[...nextauth]/options";
+import { authOptions } from "../../../lib/options";
 import mongoose from "mongoose";
 //POST request is for updating the user isAcceptingMessage property
 export async function GET() {
@@ -19,7 +19,7 @@ export async function GET() {
         success: false,
         message: "User is not authenticated",
       },
-      { status: 401 }
+      { status: 401 } //unauthorized
     );
   }
   const userId = new mongoose.Types.ObjectId(userObj._id); //creating a new objectId as we made it to string but as we are using aggregation pipeline it must be of type mongoDB objectId it is ok for other methods like findById() etc
@@ -46,9 +46,9 @@ export async function GET() {
       return Response.json(
         {
           success: false,
-          message: "User Not Found",
+          message: "User Message  Not Found",
         },
-        { status: 404 }
+        { status: 404 } //Not found
       );
     }
     return Response.json(

@@ -63,9 +63,13 @@ const verifyAccount = () => {
           <p className="mb-4">Enter the verification code sent to your email</p>
         </div>
         <Form {...form}>
+          {/* we have to use spread operator here so that Form element can have access to all methods of
+        useForm here it need watch , setvalue etc and many more methods so the best way is to use spread operator 
+        so that it has access to each object of useForm  */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
-              control={form.control}
+              control={form.control}//This object contains methods for registering components into React Hook Form.
+              // do not access any of the properties inside this object directly. It's for internal usage only.
               name="code"
               render={({ field }) => (
                 <FormItem>

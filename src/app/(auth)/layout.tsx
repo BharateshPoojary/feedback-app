@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import "../globals.css";
 export const metadata = {
   title: "Next.js",
@@ -11,7 +12,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+
+      <body>{children}   <Toaster /></body>
+      {/* SSR Generates valid HTML YOU included Toaster outside body which is not valid as it conatin direct div div 
+      should be inside body when It rendered for first time the browser created a tree where toaster is outside body
+      but it should not be as it is not a sign of valid HTML */}
+
     </html>
   );
 }

@@ -1,3 +1,3 @@
 export default function Home() {
-  return <>home</>;
+  return <>home bharat Make your carousel here</>;
 }
