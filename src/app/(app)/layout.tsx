@@ -29,9 +29,11 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <Navbar />
-          {children}{/* sent as prop to this component */}
+          {children}
+          {/* sent as prop to this component */}
           <Toaster />
         </body>
       </AuthProvider>
