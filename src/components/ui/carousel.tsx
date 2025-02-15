@@ -28,13 +28,19 @@ type CarouselProps = {
 };
 
 type CarouselContextProps = {
-  carouselRef: ReturnType<typeof useEmblaCarousel>[0];
-  api: ReturnType<typeof useEmblaCarousel>[1];
-  selectedIndex: number;
+  carouselRef: ReturnType<typeof useEmblaCarousel>[0]; //Ref to attach to the carousel container
+  api: ReturnType<typeof useEmblaCarousel>[1]; //embla api  object for controlling the carousel
+  selectedIndex: number; //Keeps track of the currently selected slide index.
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
+  //Dispatch includes  the function which is going to update the state often used with useState setstateaction represents the function which updates the state  and this state will
+  // only change the state of number type
+  //e.g const [count,setCount] =  useState(0);
+  // here setCount(count+1):React.Dispatch<React.SetStateAction<number>>
 } & CarouselProps;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
+// create context is used so that state can be accessed by the components which are residing inside carousel compoenent
+// here we will wrap the carousel component with context.provider
 
 function useCarousel() {
   const context = React.useContext(CarouselContext);
@@ -49,7 +55,11 @@ const Carousel = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement> & CarouselProps
 >(
   (
+    // forwardRef allows to pass the ref to child component  which mean if Carousel compoent get some ref it will can be used bycomponent residing inside Carousel component
+    // HTMLDivElement the ref will be attached to div element
+    // React.HTMLAttributes<HTMLDivElement> this div will contain all the attributes that a normal div element contains like className=,id= etc.
     {
+      // This are destructured props
       orientation = "horizontal",
       opts,
       setApi,
@@ -57,16 +67,16 @@ const Carousel = React.forwardRef<
       className,
       children,
       autoplayInterval = 3000,
-      ...props
+      ...props // this are the extra  props a component can get I am directly giving  all props without explicitly specifying it
     },
     ref
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
       {
-        ...opts,
-        axis: orientation === "horizontal" ? "x" : "y",
+        ...opts, //spreading the opts object which contain various properties and one property I am overriding here
+        axis: orientation === "horizontal" ? "x" : "y", //i.e axis if horizonatal then x else y
       },
-      plugins
+      plugins //It includes various plugins
     );
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [slideCount, setSlideCount] = React.useState(0);
@@ -83,32 +93,38 @@ const Carousel = React.forwardRef<
         return;
       }
       setSlideCount(api.scrollSnapList().length);
+      // The length of this array represents the total number of slides.
 
       const autoplay = () => {
         if (api.selectedScrollSnap() === slideCount - 1) {
+          //api.selectedScrollSnap() This returns the index of the currently selected slide.
+          // if there are 5 slide 0,1,2,3,4 then 5-1 = 4 that time it will again start from 0
           api.scrollTo(0);
         } else {
           api.scrollNext();
         }
       };
 
-      const interval = setInterval(autoplay, autoplayInterval);
-      return () => clearInterval(interval);
+      const interval = setInterval(autoplay, autoplayInterval); //here it will call the setInterval call back after the given seconds it is not dependent on useEffect running
+      return () => clearInterval(interval); //here when any of the dependencies changed it will clear the old interval and start with new interval by setting it again using
+      // setInterval using setInterval
     }, [api, autoplayInterval, slideCount]);
 
     React.useEffect(() => {
-      const select = () => {
-        if (!api) return;
-        const onSelect = () => setSelectedIndex(api.selectedScrollSnap());
-        api.on("select", onSelect);
-        return () => api.off("select", onSelect);
-      };
-      select();
+      if (!api) return;
+      const onSelect = () => setSelectedIndex(api.selectedScrollSnap());
+      api.on("select", onSelect); //when a particular slide is selected the onSelect() callback will run and will move to that index where the slide currently present
+      // this is usefull for indicators to know where the slide is currently present
+      return () => {
+        api.off("select", onSelect);
+      }; //It should be wrapped in a {} to explictly tell that it returns a callback or else it will throw an error
+      // as useEffect only returns a  callback function
     }, [api]);
 
     return (
       <CarouselContext.Provider
         value={{
+          //The value prop includes the functions and various option which we passed as object {} so that when we use this context we can destructure it
           carouselRef,
           api,
           opts,
@@ -119,7 +135,7 @@ const Carousel = React.forwardRef<
         }}
       >
         <div
-          ref={ref}
+          ref={ref} //here it includes the forwarded ref sent fram parent    <CarouselContext.Provider
           className={cn("relative", className)}
           role="region"
           aria-roledescription="carousel"
@@ -138,11 +154,12 @@ const CarouselContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel();
+  //...props means any props sent to this compoenent we are directly accessing it inside return()
+  const { carouselRef, orientation } = useCarousel(); //using the context value
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} className="overflow-hidden md:w-2/4 w-9/12">
       <div
-        ref={ref}
+        ref={ref} //forwarded ref here
         className={cn(
           "flex",
           orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
@@ -153,7 +170,7 @@ const CarouselContent = React.forwardRef<
     </div>
   );
 });
-CarouselContent.displayName = "CarouselContent";
+CarouselContent.displayName = "CarouselContent"; //custom name for component
 
 const CarouselItem = React.forwardRef<
   HTMLDivElement,
@@ -166,8 +183,8 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
+        "w-full shrink-0 grow-0 ",
+        orientation === "horizontal" ? "pl-4 " : "pt-4 ",
         className
       )}
       {...props}

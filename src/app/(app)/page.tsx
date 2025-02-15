@@ -16,13 +16,13 @@ const Home = () => {
       <h5 className="text-center text-lg md:text-3xl my-5 font-bold">
         Get your first anonymous message now !!
       </h5>
-      <Carousel className="w-60 sm:w-80 md:w-96  max-w-full mx-auto">
+      <Carousel className=" max-w-full flex  flex-col justify-center items-center">
         <CarouselContent>
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
-              <div className="p-1">
-                <Card>
-                  <CardContent className="flex aspect-square items-center justify-center p-6">
+              <div>
+                <Card className="max-w-full">
+                  <CardContent className="flex w-full items-center justify-center p-24">
                     <span className="text-4xl font-semibold">{index + 1}</span>
                   </CardContent>
                 </Card>
