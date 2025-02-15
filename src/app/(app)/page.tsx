@@ -1,9 +1,9 @@
 "use client";
 import EmblaCarousel from "@/app/(app)/EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
-import "../base.css";
-import "../embla.css";
-import "../sandbox.css";
+import "@/app/base.css";
+import "@/app/embla.css";
+import "@/app/sandbox.css";
 
 const Home = () => {
   const OPTIONS: EmblaOptionsType = {};
