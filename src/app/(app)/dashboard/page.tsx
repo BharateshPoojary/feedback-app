@@ -19,7 +19,7 @@ const page = () => {
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
   const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth](client side)
-  //data property contain session now we can use this session property 
+  //data property contain session now we can use this session property
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -128,10 +128,10 @@ const page = () => {
     }
   };
 
-  console.log("User Session", session);//here 
+  console.log("User Session", session); //here
   if (!session || !session?.user) return;
   //Once we get session after that we will safely retrieve the username
-  //here our if is like a boundary it will check if the session is present or not if notit will be returned from here only 
+  //here our if is like a boundary it will check if the session is present or not if notit will be returned from here only
 
   const { username } = session?.user; //accessing user name
   const baseUrl = `${window.location.protocol}//${window.location.host}`; /*window.location.protocol:
@@ -150,75 +150,73 @@ const page = () => {
   };
 
   return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-      <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
-        <div className="flex items-center">
-          <input
-            type="text"
-            value={profileUrl} //profile url will be by default a  value to this input tag which this logged in user can copy
-            disabled //it is disabled as user cannot edit this input only can copy
-            className="input input-bordered w-full p-2 mr-2"
-          />
-          <Button onClick={copyToClipboard}>Copy</Button>
-          {/* button for copying to clipboard*/}
+    <div className="max-w-full w-full overflow-x-hidden">
+      <div className="my-8 mx-auto p-6 bg-white rounded w-full max-w-6xl">
+        <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
+          <div className="flex items-center">
+            <input
+              type="text"
+              value={profileUrl} //profile url will be by default a  value to this input tag which this logged in user can copy
+              disabled //it is disabled as user cannot edit this input only can copy
+              className="input input-bordered w-full p-2 mr-2"
+            />
+            <Button onClick={copyToClipboard}>Copy</Button>
+            {/* button for copying to clipboard*/}
+          </div>
         </div>
-      </div>
 
-      <div className="mb-4">
-        <Switch
-          {...register(
-            "acceptMessages"
-          )} /*{...register("acceptMessages")}: This is a function from a library like React Hook Form.
+        <div className="mb-4">
+          <Switch
+            {...register(
+              "acceptMessages"
+            )} /*{...register("acceptMessages")}: This is a function from a library like React Hook Form.
           It registers the switch with a form field named "acceptMessages", enabling it to be validated and tracked as part of the form. (registering the switch as form field with the name as "acceptMessages" )*/
-          checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it is true which means user is accepting message or vice versa
-          onCheckedChange={handleSwitchChange} // A callback function (handleSwitchChange) that handles toggling logic when the switch is clicked or toggled.
-          disabled={
-            isSwitching
-          } /*Controls whether the switch is interactive or not.
+            checked={acceptMessages} //it is to determine  / verify whether the user is accepting message or not i.e if it is true which means user is accepting message or vice versa
+            onCheckedChange={handleSwitchChange} // A callback function (handleSwitchChange) that handles toggling logic when the switch is clicked or toggled.
+            disabled={
+              isSwitching
+            } /*Controls whether the switch is interactive or not.
           When disabled is true, the user cannot toggle the switch. This is controlled by the isSwitching state.*/
-        />
-        <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}
-          {/*  Displays text that reflects the current state of acceptMessages:
+          />
+          <span className="ml-2">
+            Accept Messages: {acceptMessages ? "On" : "Off"}
+            {/*  Displays text that reflects the current state of acceptMessages:
             If acceptMessages is true, it shows "Accept Messages: On".
             If false, it shows "Accept Messages: Off". */}
-        </span>
-      </div>
-      <Separator />
-      {/* a line from shadcn to separate the ui components    */}
+          </span>
+        </div>
+        <Separator />
+        {/* a line from shadcn to separate the ui components    */}
 
-      <Button
-        className="mt-4"
-        variant="outline"
-        onClick={(e) => {
-          e.preventDefault();
-          fetchMessages(true); //this is a button for refreshing generally to get new messaeges its a function which will run it considers true argument to make refresh true and sending toast message
-        }}
-      >
-        {isLoading ? ( //when the loading is true it will show loader
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <RefreshCcw className="h-4 w-4" /> //or else if not loading then refresh button so that user can refresh
-        )}
-      </Button>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {Messages.length > 0 ? ( //if messagelength is >0
-          Messages.map(
-            (
-              message
-            ) => (
+        <Button
+          className="mt-4"
+          variant="outline"
+          onClick={(e) => {
+            e.preventDefault();
+            fetchMessages(true); //this is a button for refreshing generally to get new messaeges its a function which will run it considers true argument to make refresh true and sending toast message
+          }}
+        >
+          {isLoading ? ( //when the loading is true it will show loader
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCcw className="h-4 w-4" /> //or else if not loading then refresh button so that user can refresh
+          )}
+        </Button>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Messages.length > 0 ? ( //if messagelength is >0
+            Messages.map((message) => (
               <MessageCard //showing message card for each message
                 key={message._id} //to uniquely identify each message
                 message={message} //this is the actual message we are displaying
                 onMessageDelete={handleDeleteMessage} //function for handling deletion of message
               />
-            )
-          )
-        ) : (
-          <p>No messages to display.</p> //if no messages to display
-        )}
+            ))
+          ) : (
+            <p>No messages to display.</p> //if no messages to display
+          )}
+        </div>
       </div>
     </div>
   );
