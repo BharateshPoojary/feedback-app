@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="w-screen p-4 md:p-7 shadow-md bg-gray-900 rounded-br-full text-white h-24 flex  items-center">
+      <nav className="w-full p-5 shadow-md bg-gray-900 rounded-br-full text-white h-24 flex  items-center">
         <div className="container flex flex-row  justify-between items-center">
           <span className="text-xl min-[357px]:text-2xl sm:text-4xl">
             Bharat Feedback App

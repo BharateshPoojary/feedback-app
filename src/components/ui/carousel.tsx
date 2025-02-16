@@ -157,7 +157,7 @@ const CarouselContent = React.forwardRef<
   //...props means any props sent to this compoenent we are directly accessing it inside return()
   const { carouselRef, orientation } = useCarousel(); //using the context value
   return (
-    <div ref={carouselRef} className="overflow-hidden md:w-2/4 w-9/12">
+    <div ref={carouselRef} className="overflow-hidden w-3/4 h-1/2">
       <div
         ref={ref} //forwarded ref here
         className={cn(
