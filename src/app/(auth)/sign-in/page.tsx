@@ -25,20 +25,20 @@ const page = () => {
   const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),//integrates the Zod schema validation with the form validation process
+    resolver: zodResolver(signInSchema), //integrates the Zod schema validation with the form validation process
     defaultValues: {
-      identifier: "",//Identifier can be username or email
+      identifier: "", //Identifier can be username or email
       password: "",
     },
   });
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
     const result = await signIn("credentials", {
-      redirect: false,// if true,redirection work will be done by next auth 
+      redirect: false, // if true,redirection work will be done by next auth
       identifier: data.identifier,
       password: data.password,
     });
-    console.log("Result after signIn", result)
+    console.log("Result after signIn", result);
     if (result?.error) {
       if (result.error === "CredentialsSignin") {
         toast({
@@ -65,10 +65,10 @@ const page = () => {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-700">
-      <div className="w-1/2 max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-screen bg-gray-700 ">
+      <div className="w-fit  max-w-md mx-auto p-4  space-y-8 space-x-3 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className=" font-extrabold tracking-tight lg:text-4xl mb-6">
+          <h1 className=" font-extrabold tracking-tight  text-lg min-[474px]:text-2xl sm:text-4xl mb-6">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
             Welcome back to Bharat Feedback
           </h1>
