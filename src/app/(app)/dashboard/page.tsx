@@ -15,11 +15,14 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2, RefreshCcw } from "lucide-react";
 import MessageCard from "@/components/MessageCard";
 const page = () => {
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
   const [isSwitching, setIsSwitching] = useState(false); //To ensure whether user is accepting messages or not
   const { data: session } = useSession(); //To retrieve session data this will trigger [...nextauth](client side)
   //data property contain session now we can use this session property
+  // By using useSession it gets the session data which means when ever we are coming to this page the session will be retrieved and as we mentioned the session in useEffect dep
+  //  the function fecthMessage() and fetchAcceptMessage() will run
   const handleDeleteMessage = (messageId: string) => {
     //this is for optimistic ui
     setMessages(Messages.filter((message) => message._id !== messageId));
@@ -85,6 +88,7 @@ const page = () => {
         });
       } finally {
         setIsLoading(false);
+        setIsPageLoading(false);
         // setIsSwitching(false); //user switching is done
       }
     },
@@ -148,7 +152,13 @@ const page = () => {
       description: "URL Copied to Clipboard",
     });
   };
-
+  if (isPageLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-10 w-10 animate-spin text-gray-500" />
+      </div>
+    );
+  }
   return (
     <div className="max-w-full w-full overflow-x-hidden">
       <div className="my-8 mx-auto p-6 bg-white rounded w-full max-w-6xl">

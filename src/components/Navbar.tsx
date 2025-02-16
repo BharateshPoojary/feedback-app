@@ -10,8 +10,8 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="w-full p-5 shadow-md bg-gray-900 rounded-br-full text-white h-24 flex  items-center">
-        <div className="container flex min-[530px]:flex-row flex-col   min-[530px]:justify-between justify-start items-center">
+      <nav className="w-full p-5 shadow-md bg-gray-900 rounded-br-full text-white h-28 flex  items-center">
+        <div className="container flex min-[530px]:flex-row flex-col   min-[530px]:justify-between justify-evenly items-start">
           <span className="text-xl min-[357px]:text-2xl sm:text-4xl">
             Bharat Feedback App
           </span>
@@ -29,11 +29,13 @@ const Navbar = () => {
                 </Button>
               </>
             ) : (
-              <Link href={"/sign-in"}>
-                <span className=" p-3 pr-6 pl-6 rounded-full bg-slate-100 text-black">
-                  Login
-                </span>
-              </Link>
+              <div className="flex  justify-end items-end my-3 ">
+                <Link href={"/sign-in"}>
+                  <span className=" p-3 pr-6 pl-6 rounded-full bg-slate-100 text-black">
+                    Login
+                  </span>
+                </Link>
+              </div>
             )}
           </div>
         </div>

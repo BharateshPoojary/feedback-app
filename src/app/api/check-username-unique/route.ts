@@ -2,16 +2,17 @@ import { z } from "zod";
 import { userNameValidation } from "../../../schemas/signUpSchema";
 import dbConnection from "@/lib/dbConnect";
 import UserModel from "@/model/User";
+import { NextRequest } from "next/server";
 
 const usernamequerySchema = z.object({
   //creating usernamequerySchema it is the Schema to which the username query must adhere
   username: userNameValidation, //this is the userNameValidation  our username query parameter must follow
 });
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   //This route will only accept GET request
   await dbConnection(); //connecting to database
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     //URL object includes various methods one of which is searchParams which returns all the query parameter in an object (key is queryname : value is query value  )e.g:URLSearchParams { 'username' => 'BHARAT' }
     const queryParams = { username: searchParams.get("username") };
     // 1)Accessing the specific username query parameter get() method returns the first value of the given search parameter
