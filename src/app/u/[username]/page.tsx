@@ -19,7 +19,9 @@ const page = () => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setTextArea(e.target.value);
   };
+  console.log(textArea, "Text Area");
   const handleClick = async (): Promise<void> => {
+    // console.log("Text Area", textArea);
     if (textArea.trim() === "") {
       toast({
         title: "Please enter a message",
@@ -87,6 +89,7 @@ const page = () => {
           <Link
             href={"/"}
             className="my-2 p-2 rounded-lg bg-slate-900 text-slate-100 hover:bg-gray-500"
+            // onClick={() => setTextArea("")}
           >
             Create Your Account{" "}
           </Link>
