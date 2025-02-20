@@ -6,6 +6,7 @@ It takes in the authentication options (authOptions), which typically include yo
 This function returns the session object containing the authenticated user's data, including user information and any custom properties you might have added to the session or JWT */
 import { authOptions } from "../../../lib/options";
 import mongoose from "mongoose";
+import { responseContent } from "@/hooks/use-response";
 //POST request is for updating the user isAcceptingMessage property
 export async function GET() {
   await dbConnection();
@@ -13,14 +14,15 @@ export async function GET() {
   const userObj = accessing_session?.user; //accessing the user object from session
   if (!accessing_session || !userObj) {
     //If the session or user object is not present it means user is not authentiacted
-    return Response.json(
-      //returning the response
-      {
-        success: false,
-        message: "User is not authenticated",
-      },
-      { status: 401 } //unauthorized
-    );
+    return responseContent(false, "User is not authenticated", 401);
+    // return Response.json(
+    //   //returning the response
+    //   {
+    //     success: false,
+    //     message: "User is not authenticated",
+    //   },
+    //   { status: 401 } //unauthorized
+    // );
   }
   const userId = new mongoose.Types.ObjectId(userObj._id); //creating a new objectId as we made it to string but as we are using aggregation pipeline it must be of type mongoDB objectId it is ok for other methods like findById() etc
   try {
@@ -43,13 +45,14 @@ export async function GET() {
       !gettingallmessagesfromuser ||
       gettingallmessagesfromuser.length === 0
     ) {
-      return Response.json(
-        {
-          success: false,
-          message: "User Message  Not Found",
-        },
-        { status: 404 } //Not found
-      );
+      return responseContent(false, "User Message Not Found", 404);
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message: "User Message  Not Found",
+      //   },
+      //   { status: 404 } //Not found
+      // );
     }
     return Response.json(
       {
@@ -60,13 +63,14 @@ export async function GET() {
     //REFER THE ABOVE GPT LINK YOU WILL GET TO KNOW WHY gettingallmessagesfromuser[0].messages THIS
   } catch (error) {
     console.error("An unexpected error occurred", error);
-    return Response.json(
-      {
-        success: false,
-        message: "An unexpected error occurred",
-      },
-      { status: 500 }
-    );
+    return responseContent(false, "An unexpected error occurred", 500);
+    // return Response.json(
+    //   {
+    //     success: false,
+    //     message: "An unexpected error occurred",
+    //   },
+    //   { status: 500 }
+    // );
   }
 }
 

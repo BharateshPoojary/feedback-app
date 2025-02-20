@@ -4,25 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { AppDispatch, RootState } from "@/lib/store";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTextArea } from "@/lib/features/textArea/textAreaSlice";
 
 const page = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const { content } = useSelector((state: RootState) => state.textArea);
   const { toast } = useToast();
   const params = useParams<{ username: string }>();
-  const [textArea, setTextArea] = useState<string>("");
+  // const [textArea, setTextArea] = useState<string>("");
   const [isSending, setIsSending] = useState<boolean>(false);
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setTextArea(e.target.value);
-  };
-  console.log(textArea, "Text Area");
+  // const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+  //   setTextArea(e.target.value);
+  // };
+  // //console.log(textArea, "Text Area");
   const handleClick = async (): Promise<void> => {
-    // console.log("Text Area", textArea);
-    if (textArea.trim() === "") {
+    // //console.log("Text Area", textArea);
+    if (content.trim() === "") {
       toast({
         title: "Please enter a message",
       });
@@ -32,9 +37,10 @@ const page = () => {
       setIsSending(true);
       const result = await axios.post<ApiResponse>("/api/send-message", {
         username: params.username,
-        content: textArea,
+        content,
       });
       toast({ title: "Success", description: result.data?.message });
+      dispatch(setTextArea(""));
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
@@ -60,8 +66,8 @@ const page = () => {
           <Textarea
             placeholder="Type your message here."
             className="h-40"
-            value={textArea}
-            onChange={handleChange}
+            value={content}
+            onChange={(e) => dispatch(setTextArea(e.target.value))}
           />
           <div className="flex justify-center items-center">
             <Button
@@ -89,7 +95,7 @@ const page = () => {
           <Link
             href={"/"}
             className="my-2 p-2 rounded-lg bg-slate-900 text-slate-100 hover:bg-gray-500"
-            // onClick={() => setTextArea("")}
+            onClick={() => dispatch(setTextArea(""))}
           >
             Create Your Account{" "}
           </Link>

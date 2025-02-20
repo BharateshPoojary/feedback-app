@@ -1,8 +1,9 @@
+"use client";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/model/User";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardDescription,
@@ -21,17 +22,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"; //using the alert dialog
 import { Button } from "@/components/ui/button"; //using the button component
-import { X } from "lucide-react"; //using X icon from lucide-react
+import { Loader2, X } from "lucide-react"; //using X icon from lucide-react
 type MessageCardProps = {
   //using type aliases for custom type for Message card props
   message: Message; //message which is of type Message
   onMessageDelete: (messageId: string) => void; //this is a function to access the message id in case if anyone deleted the message from other components
 };
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
+  // const [isDeletingMessage, setIsDeletingMessage] = useState(false);
   const { toast } = useToast();
   const handleDelete = async () => {
     //handling delete route
     try {
+      // setIsDeletingMessage(true);
       const response = await axios.delete<ApiResponse>(
         `/api/delete-message/${message._id}`
       ); //sending the messageId in url params
@@ -46,6 +49,8 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           axiosError.response?.data.message || "Failed to delete message",
         variant: "destructive",
       });
+    } finally {
+      // setIsDeletingMessage(false);
     }
     onMessageDelete(message._id); //function for accessing the messageId from other components and (sending it to the params for deleting from DB)
   };
@@ -60,6 +65,16 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
     hour12: true,
     timeZone: "Asia/Kolkata",
   });
+  // if (isDeletingMessage) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <div className="h-fit w-fit p-3 bg-slate-200">
+  //         <Loader2 className="h-10 w-10 animate-spin text-gray-500" />
+  //         <p className="text-gray-500 text-sm">deleting message...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <div>
       <Card>

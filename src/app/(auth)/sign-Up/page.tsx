@@ -71,8 +71,8 @@ const page = () => {
           const response = await axios.get<ApiResponse>( //making get request and response will be of type API RESPONSE
             `/api/check-username-unique?username=${username}`
           );
-          console.log(response.data);
-          console.log(response.data.message); //in axios response is inside data object
+          //console.log(response.data);
+          //console.log(response.data.message); //in axios response is inside data object
           setUserNameReqMsg(response.data.message); //type string
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>; // as keyword in TypeScript is a type assertion. It tells TypeScript to treat a value as a specific type Treat error as axios specifc error as it is associated with axios request
@@ -100,7 +100,7 @@ const page = () => {
     setIsSubmitting(true);
     try {
       const submitresponse = await axios.post<ApiResponse>("/api/signUp", data); //sending the data to server
-      // console.log("Data Received", data);
+      // //console.log("Data Received", data);
       //axios sends the data in json format
       // data will be username , email and password
       toast({
@@ -111,7 +111,7 @@ const page = () => {
       router.replace(`/verify/${username}`); //Perform a client-side navigation to the provided route without adding a new entry into the browser’s history stack.
     } catch (error) {
       const axioserror = error as AxiosError<ApiResponse>;
-      console.log(axioserror);
+      //console.log(axioserror);
       const formsubmissionerror =
         axioserror.response?.data.message ?? "error during form submission";
 

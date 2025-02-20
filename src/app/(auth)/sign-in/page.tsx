@@ -38,7 +38,7 @@ const page = () => {
       identifier: data.identifier,
       password: data.password,
     });
-    console.log("Result after signIn", result);
+    //console.log("Result after signIn", result);
     if (result?.error) {
       if (result.error === "CredentialsSignin") {
         toast({
@@ -58,7 +58,7 @@ const page = () => {
     }
     if (result?.url) {
       //This indicates the URL to which the user should be redirected after a successful sign-in.
-      console.log(result.url);
+      //console.log(result.url);
 
       setIsSubmitting(false);
       router.replace("/dashboard");

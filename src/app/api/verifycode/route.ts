@@ -2,6 +2,7 @@ import { z } from "zod";
 import dbConnection from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { verifySchema } from "@/schemas/verifySchema";
+import { responseContent } from "@/hooks/use-response";
 export async function POST(request: Request) {
   await dbConnection();
   try {
@@ -15,73 +16,87 @@ export async function POST(request: Request) {
     if (!verificationCodeResult.success) {
       const verificationCodeErrorspecifictovalidation =
         verificationCodeResult.error.format().otp?._errors || [];
-      return Response.json(
-        {
-          success: false,
-          message:
-            verificationCodeErrorspecifictovalidation.length > 0
-              ? verificationCodeErrorspecifictovalidation.join(", ")
-              : "Invalid verfication code",
-        },
-        { status: 400 } //BAD REQUEST
-      );
+      const message: string =
+        verificationCodeErrorspecifictovalidation.length > 0
+          ? verificationCodeErrorspecifictovalidation.join(", ")
+          : "Invalid verfication code";
+      return responseContent(false, message, 400);
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message:
+      //       verificationCodeErrorspecifictovalidation.length > 0
+      //         ? verificationCodeErrorspecifictovalidation.join(", ")
+      //         : "Invalid verfication code",
+      //   },
+      //   { status: 400 } //BAD REQUEST
+      // );
     }
     const vCode = verificationCodeResult.data.otp.code;
     const user = await UserModel.findOne({
       username: decodedusername,
     });
     if (!user) {
-      return Response.json(
-        {
-          success: false,
-          message: "User Not Found",
-        },
-        { status: 404 } //requested resource (in this case, the user) does not exist on the server.
-      );
+      return responseContent(false, "User Not Found", 404);
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message: "User Not Found",
+      //   },
+      //   { status: 404 } //requested resource (in this case, the user) does not exist on the server.
+      // );
     }
     const verifyCodeVerification = user.verifyCode === vCode;
     const isverifyCodeExpired = user.verifyCodeExpiry > new Date();
-    // console.log(
+    // //console.log(
     //   "expiry data from db ",
     //   user.verifyCodeExpiry,
     //   "Current date",
     //   new Date()
     // );
-    // console.log("Date Valid till", new Date(user.verifyCodeExpiry));
+    // //console.log("Date Valid till", new Date(user.verifyCodeExpiry));
     if (!isverifyCodeExpired) {
-      return Response.json(
-        {
-          success: false,
-          message: "verification code has expired.Please signUp again ",
-        },
-        { status: 410 } //The resource (verification code) is no longer available and will not be available again.
+      return responseContent(
+        false,
+        "verification code has expired.Please signUp again",
+        410
       );
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message: "verification code has expired.Please signUp again ",
+      //   },
+      //   { status: 410 } //The resource (verification code) is no longer available and will not be available again.
+      // );
     } else if (!verifyCodeVerification) {
-      return Response.json(
-        {
-          success: false,
-          message: "Incorrect verification code ",
-        },
-        { status: 400 } //bad request
-      );
+      return responseContent(false, "Incorrect verification code", 400);
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message: "Incorrect verification code ",
+      //   },
+      //   { status: 400 } //bad request
+      // );
     } else {
       user.isVerified = true; //making user verification to true important one
       await user.save(); //THIS IS IMPORTANT
-      return Response.json(
-        {
-          success: true,
-          message: "Account verified successfully",
-        },
-        { status: 200 } //Request Succeeded
-      );
+      return responseContent(true, "Account verified successfully", 200);
+      // return Response.json(
+      //   {
+      //     success: true,
+      //     message: "Account verified successfully",
+      //   },
+      //   { status: 200 } //Request Succeeded
+      // );
     }
   } catch (error) {
-    return Response.json(
-      {
-        success: false,
-        message: "Error verifying code",
-      },
-      { status: 500 } //Internal server error
-    );
+    return responseContent(false, "Error verifying code", 500);
+    // return Response.json(
+    //   {
+    //     success: false,
+    //     message: "Error verifying code",
+    //   },
+    //   { status: 500 } //Internal server error
+    // );
   }
 }

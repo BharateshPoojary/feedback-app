@@ -2,6 +2,7 @@ import dbConnection from "@/lib/dbConnect";
 import { sendverificationemail } from "@/helpers/sendverificationemail";
 import UserModel from "@/model/User";
 import bcrypt from "bcryptjs";
+import { responseContent } from "@/hooks/use-response";
 
 export async function POST(request: Request) {
   /**request is the name of the parameter, which represents the incoming HTTP request.
@@ -25,12 +26,17 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
     //if a user exist by this email
     if (Existing_user_by_this_email) {
       //if a user exist by this email and is verified
-      console.log("Email existing but not verified");
+      //console.log("Email existing but not verified");
       if (Existing_user_by_this_email.isVerified) {
-        return Response.json(
-          { success: false, message: "User with this email already exists" },
-          { status: 409 } //duplicate resource is being created where uniqueness is required
+        return responseContent(
+          false,
+          "User with this email already exists",
+          409
         );
+        // return Response.json(
+        //   { success: false, message: "User with this email already exists" },
+        //   { status: 409 } //duplicate resource is being created where uniqueness is required
+        // );
       } else {
         //if a user exist by this email and is  not verified which means he is updating  his password
         const hashedpasswordfornewpassword = await bcrypt.hash(password, 10);
@@ -43,10 +49,11 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
       //if  user exist by this username
       if (isExisting_user_by_this_username) {
         if (isExisting_user_by_this_username.isVerified) {
-          return Response.json(
-            { success: false, message: "Username already exists" },
-            { status: 409 } //duplicate resource is being created where uniqueness is required
-          );
+          return responseContent(false, "Username already exists", 409);
+          // return Response.json(
+          //   { success: false, message: "Username already exists" },
+          //   { status: 409 } //duplicate resource is being created where uniqueness is required
+          // );
         } else {
           const hashedpasswordfornewpassword = await bcrypt.hash(password, 10);
           isExisting_user_by_this_username.password =
@@ -79,24 +86,27 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
       verifyCode
     );
     if (!verificationemail.success) {
-      return Response.json(
-        { success: false, message: verificationemail.message },
-        { status: 500 } //Internal server error
-      );
+      return responseContent(false, verificationemail.message, 500);
+      // return Response.json(
+      //   { success: false, message: verificationemail.message },
+      //   { status: 500 } //Internal server error
+      // );
     } else {
-      return Response.json(
-        {
-          success: true,
-          message: verificationemail.message,
-        },
-        { status: 201 } //New resource created
-      );
+      return responseContent(true, verificationemail.message, 201);
+      // return Response.json(
+      //   {
+      //     success: true,
+      //     message: verificationemail.message,
+      //   },
+      //   { status: 201 } //New resource created
+      // );
     }
   } catch (error) {
     console.error("Error registering user", error);
-    return Response.json(
-      { success: false, message: "Error Registering user" },
-      { status: 500 }
-    ); //code 500 means something went wrong on the server
+    return responseContent(false, "Error registering user", 500);
+    // return Response.json(
+    //   { success: false, message: "Error Registering user" },
+    //   { status: 500 }
+    // ); //code 500 means something went wrong on the server
   }
 }

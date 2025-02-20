@@ -28,18 +28,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <StoreProvider>
-        <AuthProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
+      <AuthProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <StoreProvider>
             <Navbar />
             {children}
             {/* sent as prop to this component */}
             <Toaster />
-          </body>
-        </AuthProvider>
-      </StoreProvider>
+          </StoreProvider>
+        </body>
+      </AuthProvider>
     </html>
   );
 }

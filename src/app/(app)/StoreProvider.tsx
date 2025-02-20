@@ -13,4 +13,5 @@ export default function StoreProvider({
     storeRef.current = makeStore();
   }
   return <Provider store={storeRef.current}>{children}</Provider>;
+  //Any component which are wrapped inside StoreProvider will be considered as  children and the store access will be available to it
 }

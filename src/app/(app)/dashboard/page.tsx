@@ -5,7 +5,7 @@ import { z } from "zod";
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Message, User } from "@/model/User";
+import { Message } from "@/model/User";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "@/hooks/use-toast";
@@ -112,7 +112,7 @@ const page = () => {
           acceptMessage: !acceptMessages, //when the user switch the message accepting property if it is previously true then it will send false or vice versa
         }
       );
-      // console.log("Response for switching", responseForSwitchingAcceptMessage.data);//It will retuen the whole document
+      // //console.log("Response for switching", responseForSwitchingAcceptMessage.data);//It will retuen the whole document
       if (responseForSwitchingAcceptMessage) {
         setValue("acceptMessages", !acceptMessages); //if the switching is done in server side then we will also reflect it in client side by setting its value
         toast({
@@ -132,7 +132,7 @@ const page = () => {
     }
   };
 
-  console.log("User Session", session); //here
+  //console.log("User Session", session); //here
   if (!session || !session?.user) return;
   //Once we get session after that we will safely retrieve the username
   //here our if is like a boundary it will check if the session is present or not if notit will be returned from here only

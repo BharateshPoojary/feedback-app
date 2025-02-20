@@ -9,7 +9,7 @@ import { getToken } from "next-auth/jwt"; //this import is made to verify whethe
 // const secret = process.env.NEXTAUTH_SECRET;
 // export default withAuth(
 //   function middleware(req) {
-//     console.log(req.nextauth.token);
+//     //console.log(req.nextauth.token);
 //     return NextResponse.next(); //passing the control to the next middleware
 //   },
 //   {
@@ -26,7 +26,7 @@ import { getToken } from "next-auth/jwt"; //this import is made to verify whethe
 //         if (pathname.startsWith("/dashboard")) {
 //           // const token = await getToken({ req: request, secret });
 //           if (token) {
-//             console.log("JWT Token", token);
+//             //console.log("JWT Token", token);
 //             return true;
 //           }
 //         }
@@ -46,7 +46,7 @@ import { getToken } from "next-auth/jwt"; //this import is made to verify whethe
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const token = await getToken({ req: request }); //assigning the request to req property of getToken() function as object so that it can access the token
-  console.log("JWT Token", token);
+  // //console.log("JWT Token", token);
   if (
     token &&
     (url.pathname.startsWith("/sign-in") ||

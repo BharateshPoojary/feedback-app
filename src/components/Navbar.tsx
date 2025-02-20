@@ -30,10 +30,11 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex  justify-end items-end my-3 ">
-                <Link href={"/sign-in"}>
-                  <span className=" p-3 pr-6 pl-6 rounded-full bg-slate-100 text-black">
-                    Login
-                  </span>
+                <Link
+                  href="/sign-in"
+                  className=" p-3 pr-6 pl-6 rounded-full bg-slate-100 text-black"
+                >
+                  Login
                 </Link>
               </div>
             )}

@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier }, //identifier can refer to email or username
             ],
           });
-          console.log("User", user);
+          //console.log("User", user);
           if (!user) {
             throw new Error("No user found with this credentials");
           }
@@ -70,19 +70,19 @@ export const authOptions: NextAuthOptions = {
         The contents user, account, profile and isNewUser will vary depending on the provider and if you are using a database. You can persist data such as User ID, OAuth Access Token in this token 
         Use an if branch to check for the existence of parameters (apart from token). If they exist, this means that the callback is being invoked for the first time (i.e. the user is being signed in). This is a good place to persist additional data like an access_token in the JWT. Subsequent invocations will only contain the token parameter.*/
         //storing the user data in payload
-        console.log("User from authorize:", user);
+        //console.log("User from authorize:", user);
         token._id = user._id?.toString(); //converting object id to string
         token.isVerified = user.isVerified;
         token.isAcceptingMessage = user.isAcceptingMessages;
         token.username = user.username;
       }
-      console.log("Final JWT Token:", token);
+      //console.log("Final JWT Token:", token);
       return token; // we will update the token with user data  by storing it in seperate key inside token  as we did above
       //returning the token which then will be stored in cookie and session  callback can access this now
     },
     //session we get by default in call backs ( When the authorize is true)
     async session({ session, token }) {
-      console.log("Session callback token:", token);
+      //console.log("Session callback token:", token);
       /**The session callback is called whenever a session is checked like while using methods like getSession(), useSession(), /api/auth/session(). By default, only a subset of the token is returned for increased security. 
       When using database sessions, the User (user) object is passed as an argument.
 When using JSON Web Tokens for sessions, the JWT payload (token) is provided instead.*/
@@ -94,7 +94,7 @@ When using JSON Web Tokens for sessions, the JWT payload (token) is provided ins
         session.user.isAcceptingMessages = token.isAcceptingMessages;
         session.user.username = token.username;
       }
-      console.log("Final Session:", session);
+      //console.log("Final Session:", session);
       return session; //Now here session will contain user object and this object contains jwt data which is accessible everywhere
     },
   },
