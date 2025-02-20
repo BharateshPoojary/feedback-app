@@ -1,4 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials"; // Imports the Credentials provider from NextAuth, allowing the use of custom login credentials.
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import dbConnection from "@/lib/dbConnect";
 import UserModel from "@/model/User";
@@ -14,6 +15,10 @@ export const authOptions: NextAuthOptions = {
   Pages (for custom login, register, etc.)
   Session settings (e.g., session strategy, expiration) */
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     //Defines the array of providers (like  Credentials in our case can be google , github) used for authentication.
     /**n Auth.js (formerly NextAuth.js), the providers array is used to configure the authentication providers that your application will support. This array defines how users can log into your app via third-party services like Google, Facebook, GitHub, Twitter, etc., as well as credentials-based logins if needed. */
     CredentialsProvider({

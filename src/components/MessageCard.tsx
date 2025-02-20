@@ -49,9 +49,10 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           axiosError.response?.data.message || "Failed to delete message",
         variant: "destructive",
       });
-    } finally {
-      // setIsDeletingMessage(false);
     }
+    //  finally {
+    // setIsDeletingMessage(false);
+    // }
     onMessageDelete(message._id); //function for accessing the messageId from other components and (sending it to the params for deleting from DB)
   };
   const messageDate = message.createdAt;

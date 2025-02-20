@@ -117,6 +117,9 @@ const page = () => {
           </form>
         </Form>
         <div className="flex justify-center">
+          <Button onClick={() => signIn("google")}>Sign in with Google</Button>
+        </div>
+        <div className="flex justify-center">
           <p>
             New to Bharat Feedback ?&nbsp;
             <Link href="/sign-Up" className="text-blue-500 hover:text-blue-900">

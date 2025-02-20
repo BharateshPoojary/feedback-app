@@ -4,10 +4,11 @@ import { signOut, useSession } from "next-auth/react";
 import { User } from "next-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+// import { useRouter } from "next/navigation";
 const Navbar = () => {
   const { data: session } = useSession();
   const user = session?.user as User;
-
+  // const router = useRouter();
   return (
     <div>
       <nav className="w-full p-5 shadow-md bg-gray-900 rounded-br-full text-white h-28 flex  items-center">
