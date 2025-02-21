@@ -207,7 +207,12 @@ const page = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" placeholder="password" />
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="password"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

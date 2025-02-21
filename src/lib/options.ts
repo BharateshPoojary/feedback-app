@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import dbConnection from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import type { NextAuthOptions } from "next-auth";
-import { User } from "@/model/User";
+
 // we can place options.ts file anywhere but the thing is it should be injected inside the [...nextauth] file
 //as here we are just writing options after wards it will be injected in a route where it will actual work as API
 export const authOptions: NextAuthOptions = {
@@ -18,6 +18,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     //Defines the array of providers (like  Credentials in our case can be google , github) used for authentication.
     /**n Auth.js (formerly NextAuth.js), the providers array is used to configure the authentication providers that your application will support. This array defines how users can log into your app via third-party services like Google, Facebook, GitHub, Twitter, etc., as well as credentials-based logins if needed. */
@@ -68,26 +75,68 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     //Callbacks are asynchronous functions you can use to control what happens when an action is performed(ACTION Like SIGNIN,accessing session data etc ).
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       /**This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated (i.e whenever a session is accessed in the client). The returned value will be encrypted, and it is stored in a cookie. Requests to /api/auth/signin, /api/auth/session and calls to getSession(), getServerSession(), useSession() will invoke this function, but only if you are using a JWT session. This method is not invoked when you persist sessions in a database.JSON Web Tokens can be used for generating session tokens if enabled with session: { strategy: "jwt" } option.*/
       if (user) {
         /**The arguments LIKE  user (WE USED HERE ), account, profile and isNewUser are only passed the first time this callback is called at the time of creating a  new session, after the user signs in. In subsequent calls, only token will be available. AND IT WILL BE RETURNED .
         The contents user, account, profile and isNewUser will vary depending on the provider and if you are using a database. You can persist data such as User ID, OAuth Access Token in this token 
         Use an if branch to check for the existence of parameters (apart from token). If they exist, this means that the callback is being invoked for the first time (i.e. the user is being signed in). This is a good place to persist additional data like an access_token in the JWT. Subsequent invocations will only contain the token parameter.*/
         //storing the user data in payload
-        //console.log("User from authorize:", user);
+        console.log("Token before adding user", token);
+        console.log("User from authorize:", user);
+        console.log("Account Object", account);
         token._id = user._id?.toString(); //converting object id to string
         token.isVerified = user.isVerified;
-        token.isAcceptingMessage = user.isAcceptingMessages;
+        token.isAcceptingMessages = user.isAcceptingMessages;
         token.username = user.username;
       }
-      //console.log("Final JWT Token:", token);
+      if (account && account.provider === "google") {
+        await dbConnection();
+        //if he is having access token (account parameter is only available on first time sign in )
+        try {
+          const findUserwithemail = await UserModel.findOne({
+            useremail: token.email,
+          }); //token will conatin name,email,picture
+          // but if you are using credential provider you will not get this  it will be undefined instead you will have user object with all the properties  your user document is containing but the user in google provider will contain the same property the token is having so you can access email from user or token object
+          //if the Oauth logged in user is existing in DB
+          if (findUserwithemail) {
+            //This condition if for those who logged in using cred provider but again login using google provider so inorder
+            //to enure that the user is not added 2 times in db this is important if he is a new user then he will go to else conidtion
+            //where we will create a new user
+            token._id = findUserwithemail._id?.toString();
+            token.isVerified = findUserwithemail.isVerified;
+            token.isAcceptingMessages = findUserwithemail.isAcceptingMessages;
+            token.username = findUserwithemail.username;
+          } else {
+            console.log("I am in else condition");
+            const creatingnewuser = new UserModel({
+              username: token.name,
+              useremail: token.email,
+              password: "",
+              verifyCode: "",
+              verifyCodeExpiry: null,
+              isVerified: true,
+              isAcceptingMessages: true,
+              message: [],
+            });
+            await creatingnewuser.save();
+            //accessing the data and storing in token
+            token._id = creatingnewuser._id?.toString();
+            token.isVerified = creatingnewuser.isVerified;
+            token.isAcceptingMessages = creatingnewuser.isAcceptingMessages;
+            token.username = creatingnewuser.username;
+          }
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      }
+      console.log("Final JWT Token:", token);
       return token; // we will update the token with user data  by storing it in seperate key inside token  as we did above
       //returning the token which then will be stored in cookie and session  callback can access this now
     },
     //session we get by default in call backs ( When the authorize is true)
     async session({ session, token }) {
-      //console.log("Session callback token:", token);
+      console.log("Session callback token:", token);
       /**The session callback is called whenever a session is checked like while using methods like getSession(), useSession(), /api/auth/session(). By default, only a subset of the token is returned for increased security. 
       When using database sessions, the User (user) object is passed as an argument.
 When using JSON Web Tokens for sessions, the JWT payload (token) is provided instead.*/
@@ -99,7 +148,7 @@ When using JSON Web Tokens for sessions, the JWT payload (token) is provided ins
         session.user.isAcceptingMessages = token.isAcceptingMessages;
         session.user.username = token.username;
       }
-      //console.log("Final Session:", session);
+      console.log("Final Session:", session);
       return session; //Now here session will contain user object and this object contains jwt data which is accessible everywhere
     },
   },

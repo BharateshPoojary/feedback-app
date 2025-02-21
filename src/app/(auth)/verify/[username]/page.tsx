@@ -68,14 +68,18 @@ const verifyAccount = () => {
         so that it has access to each object of useForm  */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
-              control={form.control}//This object contains methods for registering components into React Hook Form.
+              control={form.control} //This object contains methods for registering components into React Hook Form.
               // do not access any of the properties inside this object directly. It's for internal usage only.
               name="code"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Verification Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="verification code" {...field} />
+                    <Input
+                      placeholder="verification code"
+                      {...field}
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

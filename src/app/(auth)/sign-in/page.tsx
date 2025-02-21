@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 const page = () => {
   const [issubmitting, setIsSubmitting] = useState(false);
@@ -97,7 +98,12 @@ const page = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" placeholder="password" />
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="password"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,15 +123,33 @@ const page = () => {
           </form>
         </Form>
         <div className="flex justify-center">
-          <Button onClick={() => signIn("google")}>Sign in with Google</Button>
-        </div>
-        <div className="flex justify-center">
           <p>
             New to Bharat Feedback ?&nbsp;
             <Link href="/sign-Up" className="text-blue-500 hover:text-blue-900">
               Sign Up
             </Link>
           </p>
+        </div>
+        <div className="flex items-center my-2">
+          <hr className="flex-grow border-gray-300" />
+          {/* flex-grow is used to take the available space resulting in equal hr line both side of or  */}
+          <span className="mx-2 text-gray-500">or</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+        <div className="flex justify-center">
+          <Button
+            onClick={() => signIn("google")}
+            className="bg-white text-gray-800 flex items-center gap-2 px-6 py-2 hover:bg-slate-200 font-bold"
+          >
+            <Image
+              src="/Google.png"
+              width={1000}
+              height={1000}
+              alt="google"
+              className="w-6 h-6"
+            />
+            Log in with Google
+          </Button>
         </div>
       </div>
     </div>

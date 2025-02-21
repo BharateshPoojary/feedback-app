@@ -63,15 +63,15 @@ const UserSchema: Schema<User> = new Schema({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    default: "",
   },
   verifyCode: {
     type: String,
-    required: [true, "VerifyCode is required"],
+    default: "",
   },
   verifyCodeExpiry: {
     type: Date,
-    required: [true, "VerifyCodeExpiry date is required"],
+    default: null,
   },
   isVerified: {
     type: Boolean,
@@ -83,6 +83,7 @@ const UserSchema: Schema<User> = new Schema({
   },
   messages: [MessageSchema],
 });
+
 const UserModel =
   (mongoose.models.User as mongoose.Model<User>) ||
   mongoose.model<User>("User", UserSchema);
