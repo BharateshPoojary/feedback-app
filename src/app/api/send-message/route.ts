@@ -1,13 +1,17 @@
 import { responseContent } from "@/hooks/use-response";
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { UserModel } from "@/model/User";
 import { Message } from "@/model/User";
 
 export async function POST(request: Request) {
   await dbConnection();
-  const { username, content } = await request.json();
+  const { username, content }: { username: string; content: string } =
+    await request.json();
   try {
-    const usernameinDB = await UserModel.findOne({ username }).exec(); //It will return the first document which matches
+    console.log("Decoded username", username);
+    const usernameinDB = await UserModel.findOne({
+      username,
+    }).exec(); //It will return the first document which matches
     if (!usernameinDB) {
       //If no username found it means no such user present in Db
       return responseContent(false, "User not found", 404);

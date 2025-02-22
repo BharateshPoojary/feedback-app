@@ -75,11 +75,7 @@ const verifyAccount = () => {
                 <FormItem>
                   <FormLabel>Verification Code</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="verification code"
-                      {...field}
-                      required
-                    />
+                    <Input placeholder="verification code" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,6 +1,6 @@
 import dbConnection from "@/lib/dbConnect";
 import { sendverificationemail } from "@/helpers/sendverificationemail";
-import UserModel from "@/model/User";
+import { CredUserModel, OauthUserModel } from "@/model/User";
 import bcrypt from "bcryptjs";
 import { responseContent } from "@/hooks/use-response";
 
@@ -16,10 +16,13 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     const ExpiryDate = new Date();
 
-    const isExisting_user_by_this_username = await UserModel.findOne({
+    const isExisting_user_by_this_username = await CredUserModel.findOne({
       username: userName,
     });
-    const Existing_user_by_this_email = await UserModel.findOne({
+    const Existing_user_by_this_email = await CredUserModel.findOne({
+      useremail: email,
+    });
+    const Existing_user_by_this_email_in_oauth = await OauthUserModel.findOne({
       useremail: email,
     });
     ExpiryDate.setHours(ExpiryDate.getHours() + 1);
@@ -60,23 +63,30 @@ Request is a type, often provided by libraries or frameworks (like Express, Next
             hashedpasswordfornewpassword;
           isExisting_user_by_this_username.verifyCode = verifyCode;
           isExisting_user_by_this_username.verifyCodeExpiry = ExpiryDate;
-
           await isExisting_user_by_this_username.save();
         }
       } else {
-        //if a user does not exist then regsitering a new user
-        const hashedpassword = await bcrypt.hash(password, 10);
-        const creatingnewuser = new UserModel({
-          username: userName,
-          useremail: email,
-          password: hashedpassword,
-          verifyCode: verifyCode,
-          verifyCodeExpiry: ExpiryDate,
-          isVerified: false,
-          isAcceptingMessage: true,
-          message: [],
-        });
-        await creatingnewuser.save();
+        if (Existing_user_by_this_email_in_oauth) {
+          return responseContent(
+            false,
+            "An account already exists with this email via Google.",
+            409
+          );
+        } else {
+          //if a user does not exist then regsitering a new user
+          const hashedpassword = await bcrypt.hash(password, 10);
+          const creatingnewuser = new CredUserModel({
+            username: userName,
+            useremail: email,
+            password: hashedpassword,
+            verifyCode: verifyCode,
+            verifyCodeExpiry: ExpiryDate,
+            isVerified: false,
+            isAcceptingMessage: true,
+            message: [],
+          });
+          await creatingnewuser.save();
+        }
       }
     }
 

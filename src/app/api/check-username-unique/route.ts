@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { userNameValidation } from "../../../schemas/signUpSchema";
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { UserModel } from "@/model/User";
 import { NextRequest } from "next/server";
 import { responseContent } from "@/hooks/use-response";
 

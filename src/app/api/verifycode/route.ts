@@ -1,6 +1,6 @@
 import { z } from "zod";
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { CredUserModel } from "@/model/User";
 import { verifySchema } from "@/schemas/verifySchema";
 import { responseContent } from "@/hooks/use-response";
 export async function POST(request: Request) {
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       // );
     }
     const vCode = verificationCodeResult.data.otp.code;
-    const user = await UserModel.findOne({
+    const user = await CredUserModel.findOne({
       username: decodedusername,
     });
     if (!user) {

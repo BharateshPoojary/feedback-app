@@ -25,6 +25,8 @@ const page = () => {
   //   setTextArea(e.target.value);
   // };
   // //console.log(textArea, "Text Area");
+  const username = params.username;
+  const decodedusername = username.replace(/%20/g, " ");
   const handleClick = async (): Promise<void> => {
     // //console.log("Text Area", textArea);
     if (content.trim() === "") {
@@ -36,7 +38,7 @@ const page = () => {
     try {
       setIsSending(true);
       const result = await axios.post<ApiResponse>("/api/send-message", {
-        username: params.username,
+        username: decodedusername,
         content,
       });
       toast({ title: "Success", description: result.data?.message });
@@ -61,7 +63,7 @@ const page = () => {
         </p>
         <div>
           <p className="font-bold p-4">
-            Send Anonymous Message to @{params.username}
+            Send Anonymous Message to @{decodedusername}
           </p>
           <Textarea
             placeholder="Type your message here."

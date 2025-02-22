@@ -2,7 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials"; // Imports th
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { OauthUserModel, CredUserModel, UserModel } from "@/model/User";
 import type { NextAuthOptions } from "next-auth";
 
 // we can place options.ts file anywhere but the thing is it should be injected inside the [...nextauth] file
@@ -18,13 +18,14 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
+
+      // authorization: {
+      //   params: {
+      //     prompt: "consent",
+      //     access_type: "offline",
+      //     response_type: "code",
+      //   },
+      // },
     }),
     //Defines the array of providers (like  Credentials in our case can be google , github) used for authentication.
     /**n Auth.js (formerly NextAuth.js), the providers array is used to configure the authentication providers that your application will support. This array defines how users can log into your app via third-party services like Google, Facebook, GitHub, Twitter, etc., as well as credentials-based logins if needed. */
@@ -39,7 +40,7 @@ export const authOptions: NextAuthOptions = {
         //A function to handle custom logic for authenticating users when they log in.
         await dbConnection();
         try {
-          const user = await UserModel.findOne({
+          const user = await CredUserModel.findOne({
             $or: [
               // $or: A MongoDB operator that checks if either the email or username matches the identifier provided.
               { useremail: credentials.identifier },
@@ -95,26 +96,27 @@ export const authOptions: NextAuthOptions = {
         //if he is having access token (account parameter is only available on first time sign in )
         try {
           const findUserwithemail = await UserModel.findOne({
-            useremail: token.email,
-          }); //token will conatin name,email,picture
+            useremail: token.email, //if not got access token then there is trouble here
+          });
+          console.log("Token", token);
+          console.log("Account", account);
+          //token will conatin name,email,picture
           // but if you are using credential provider you will not get this  it will be undefined instead you will have user object with all the properties  your user document is containing but the user in google provider will contain the same property the token is having so you can access email from user or token object
           //if the Oauth logged in user is existing in DB
-          if (findUserwithemail) {
+          if (findUserwithemail && findUserwithemail.isVerified) {
             //This condition if for those who logged in using cred provider but again login using google provider so inorder
             //to enure that the user is not added 2 times in db this is important if he is a new user then he will go to else conidtion
             //where we will create a new user
+            console.log("User with email is there");
             token._id = findUserwithemail._id?.toString();
             token.isVerified = findUserwithemail.isVerified;
             token.isAcceptingMessages = findUserwithemail.isAcceptingMessages;
             token.username = findUserwithemail.username;
           } else {
             console.log("I am in else condition");
-            const creatingnewuser = new UserModel({
+            const creatingnewuser = new OauthUserModel({
               username: token.name,
               useremail: token.email,
-              password: "",
-              verifyCode: "",
-              verifyCodeExpiry: null,
               isVerified: true,
               isAcceptingMessages: true,
               message: [],

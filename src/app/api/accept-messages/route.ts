@@ -1,5 +1,5 @@
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { UserModel } from "@/model/User";
 import { getServerSession } from "next-auth";
 /**getServerSession() is a function provided by NextAuth to fetch the session data on the server side in Next.js.
 It takes in the authentication options (authOptions), which typically include your configured providers, callbacks, and session settings.
@@ -46,15 +46,15 @@ export async function POST(request: Request) {
       // );
     }
     return responseContent(true, "Accepting message toggled successfully", 200);
-    return Response.json(
-      //returning message about updation of isAcceptingmessage property
-      {
-        success: true,
-        message: "Accepting message toggled successfully",
-        updatingusermessageacceptanceproperty,
-      },
-      { status: 200 }
-    );
+    // return Response.json(
+    //   //returning message about updation of isAcceptingmessage property
+    //   {
+    //     success: true,
+    //     message: "Accepting message toggled successfully",
+    //     updatingusermessageacceptanceproperty,
+    //   },
+    //   { status: 200 }
+    // );
   } catch (error) {
     //error while updating the user
     //console.log("Error updating the user acceptance", error);
@@ -85,6 +85,7 @@ export async function GET() {
     );
   }
   const { _id } = userObj;
+  console.log("objectId", _id);
   try {
     const accessing_userid = await UserModel.findById(_id); //finding the user by Id
     if (!accessing_userid) {

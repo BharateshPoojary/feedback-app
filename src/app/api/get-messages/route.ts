@@ -1,5 +1,5 @@
 import dbConnection from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { UserModel } from "@/model/User";
 import { getServerSession } from "next-auth";
 /**getServerSession() is a function provided by NextAuth to fetch the session data on the server side in Next.js.
 It takes in the authentication options (authOptions), which typically include your configured providers, callbacks, and session settings.
