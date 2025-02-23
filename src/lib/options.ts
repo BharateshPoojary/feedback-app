@@ -21,9 +21,9 @@ export const authOptions: NextAuthOptions = {
 
       // authorization: {
       //   params: {
-      //     prompt: "consent",
-      //     access_type: "offline",
+      //     access_type: "offline", // Ensures we get a refresh token
       //     response_type: "code",
+      //     prompt: "select_account", // ✅ This avoids unnecessary consent screen
       //   },
       // },
     }),
@@ -164,3 +164,5 @@ When using JSON Web Tokens for sessions, the JWT payload (token) is provided ins
   //we are not persisting session data on server side (i.e in db )(If I do then I will get access token  as return value from session callback this is by default how session works) . If using JSON Web Tokens instead of database sessions, you should use the User ID or a unique key stored in the token (you will need to generate a key for this yourself on sign in, as access tokens for sessions are not generated when using JSON Web Tokens)(agar jwt use kar rahe ho toh access token by default return nahi hoga aapko jo jwt token expose hua hee session sae use 1 object ka inside like here I made a user object and uskee andar different keys for different token creds  usse 1st mae store karta hu session mae and now this user object will be accessible form any where agar aap yahi kaam ko database strategy use kar rahe ho  toh token expose nahi hoga session usse internally rakh dega chaiye toh aap usse further process karke inside session callback db mae rakh sakte ho as we get user argument instead of token while using database strategy )
   secret: process.env.NEXTAUTH_SECRET, //This is a very important credential in order to use auth
 };
+// IN CASE YOU ARE USING ONLY GOOGLE OAUTH you can find details like how to do similar
+// authentication system like mongodb atlas https://chatgpt.com/c/67bb0984-e5fc-800c-8251-d2687df75e30 here
