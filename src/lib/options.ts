@@ -22,11 +22,13 @@ export const authOptions: NextAuthOptions = {
       // authorization: {
       //   params: {
       //     access_type: "offline", // Ensures we get a refresh token
-      //     response_type: "code",
-      //     prompt: "select_account", // ✅ This avoids unnecessary consent screen
+      //     response_type: "code",//It will manage the flow for getting token
+      //     prompt: "select_account or  consent ", //  if select_account then we get interface for selecting account
+      // if consent then he has to give consent everytime
       //   },
       // },
     }),
+
     //Defines the array of providers (like  Credentials in our case can be google , github) used for authentication.
     /**n Auth.js (formerly NextAuth.js), the providers array is used to configure the authentication providers that your application will support. This array defines how users can log into your app via third-party services like Google, Facebook, GitHub, Twitter, etc., as well as credentials-based logins if needed. */
     CredentialsProvider({
