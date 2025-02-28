@@ -19,7 +19,6 @@
     "@radix-ui/react-toast": "^1.2.5",
     "@react-email/components": "^0.0.26",
     "@reduxjs/toolkit": "^2.5.1",
-    "aws-cdk": "^2.1001.0",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
