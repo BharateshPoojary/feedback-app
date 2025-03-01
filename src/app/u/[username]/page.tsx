@@ -13,6 +13,11 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTextArea } from "@/lib/features/textArea/textAreaSlice";
+import { useForm } from "react-hook-form";
+import { Form } from "@/components/ui/form";
+import { z } from "zod";
+import { sendMessageSchema } from "@/schemas/sendMessageSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const page = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -25,6 +30,11 @@ const page = () => {
   //   setTextArea(e.target.value);
   // };
   // //console.log(textArea, "Text Area");
+  const form = useForm<z.infer<typeof sendMessageSchema>>({
+    resolver: zodResolver(sendMessageSchema),
+    defaultValues: { message: content },
+  });
+  const { register, setValue } = form;
   const username = params.username;
   const decodedusername = username.replace(/%20/g, " ");
   const handleClick = async (): Promise<void> => {
@@ -57,38 +67,44 @@ const page = () => {
   };
   return (
     <div className="max-w-full w-full h-[100vh]  flex flex-col sm:justify-between justify-evenly items-center">
-      <div className="max-w-7xl w-full my-4 p-6 h-fit">
-        <p className="text-4xl font-extrabold text-center">
-          Public Profile Link
-        </p>
-        <div>
-          <p className="font-bold p-4">
-            Send Anonymous Message to @{decodedusername}
+      <Form {...form}>
+        <div className="max-w-7xl w-full my-4 p-6 h-fit">
+          <p className="text-4xl font-extrabold text-center">
+            Public Profile Link
           </p>
-          <Textarea
-            placeholder="Type your message here."
-            className="h-40"
-            value={content}
-            onChange={(e) => dispatch(setTextArea(e.target.value))}
-          />
-          {/* File upload element */}
-          <div className="flex justify-center items-center">
-            <Button
-              className="my-5 p-5 px-10 hover:bg-gray-500"
-              onClick={handleClick}
-            >
-              {isSending ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  Sending..
-                </>
-              ) : (
-                "Send"
-              )}
-            </Button>
+          <div>
+            <p className="font-bold p-4">
+              Send Anonymous Message to @{decodedusername}
+            </p>
+            <Textarea
+              {...register("message")} //registering it for validation, register binds the state here so if we made  on change with settingvalue to message  there is no requirement of value attribute as it is internally done by react hook form
+              placeholder="Type your message here."
+              className="h-40"
+              onChange={(e) => {
+                dispatch(setTextArea(e.target.value));
+                setValue("message", e.target.value);
+              }}
+            />
+
+            {/* File upload element */}
+            <div className="flex justify-center items-center">
+              <Button
+                className="my-5 p-5 px-10 hover:bg-gray-500"
+                onClick={handleClick}
+              >
+                {isSending ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Sending..
+                  </>
+                ) : (
+                  "Send"
+                )}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </Form>
       <div className=" max-w-7xl w-full p-6">
         <Separator />
         <p className=" text-xl text-bold text-center my-2">
