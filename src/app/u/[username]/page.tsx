@@ -71,6 +71,7 @@ const page = () => {
             value={content}
             onChange={(e) => dispatch(setTextArea(e.target.value))}
           />
+          {/* File upload element */}
           <div className="flex justify-center items-center">
             <Button
               className="my-5 p-5 px-10 hover:bg-gray-500"
