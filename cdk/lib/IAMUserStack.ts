@@ -14,7 +14,7 @@ export class IAMUserStack extends cdk.Stack {
     const policyStatement: PolicyStatement = new PolicyStatement({
       //creating a new policy object and defining the action and resources which we want to grant this user
       actions: ["s3:PutObject", "s3:GetObject"], //get and put object allowed to this user
-      resources: ["arn:aws:s3:::bharat-snaptalk-bucket"], //bucket arn on which we want to allow this actions
+      resources: ["arn:aws:s3:::bharat-snaptalk-bucket/*"], //bucket arn on which we want to allow this actions
     });
     iamUser.addToPolicy(policyStatement); //adding or attaching the policy to the user created
   }
