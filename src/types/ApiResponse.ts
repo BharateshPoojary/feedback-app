@@ -6,5 +6,6 @@ export interface ApiResponse {
   message: string;
   isAcceptingMessages?: boolean;
   messages?: Array<Message>;
-  preSignedUrl?: string;
+  putPresignedUrl?: string;
+  getPresignedUrl?: string;
 }

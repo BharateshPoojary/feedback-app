@@ -21,6 +21,7 @@ const page = () => {
   const { toast } = useToast();
   const params = useParams<{ username: string }>();
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [ImageUrl, setImageUrl] = useState<string>("");
   const onDrop = useCallback((acceptedFiles: File[]) => {
     console.log(acceptedFiles);
     if (acceptedFiles.length > 4) {
@@ -61,7 +62,7 @@ const page = () => {
       ...allowedVideoTypes,
     ];
     let totalFileSize: number = 0;
-    acceptedFiles.forEach((file) => {
+    acceptedFiles.forEach(async (file) => {
       if (!allowedFileTypes.includes(file.type)) {
         toast({
           title: "You can upload only image and video file ",
@@ -79,19 +80,44 @@ const page = () => {
         });
         return;
       }
-    });
-    acceptedFiles.forEach(async (file) => {
+
       const filename = file.name.replaceAll(" ", "-");
       // const uniquefilename:Array<string> = [] ;
       const uniquefilename = Date.now() + filename;
       // console.log(object)
       try {
-        const getPresignedUrl = await axios.get(
+        const putPresignedUrlRequest = await axios.get<ApiResponse>(
           `/api/presigned-url?file=${uniquefilename}`
         );
-        if (getPresignedUrl.data) {
-          const { preSignedUrl } = getPresignedUrl.data;
-          console.log(preSignedUrl);
+        if (putPresignedUrlRequest.data) {
+          const { putPresignedUrl, getPresignedUrl } =
+            putPresignedUrlRequest.data as {
+              putPresignedUrl: string;
+              getPresignedUrl: string;
+            };
+          // console.log(putPresignedUrl);
+          try {
+            const uploadFileToS3Bucket = await axios.put(putPresignedUrl, file);
+            if (uploadFileToS3Bucket) {
+              console.log("File Uploaded successfully");
+            }
+            console.log(getPresignedUrl);
+            setImageUrl(getPresignedUrl);
+          } catch (error: unknown) {
+            let errorMessage = "Failed to upload file"; // Default message
+
+            if (error instanceof Error) {
+              errorMessage = error.message; // Extract error message from Error object
+            } else if (typeof error === "string") {
+              errorMessage = error; // Handle string errors
+            }
+
+            toast({
+              title: "Error",
+              description: errorMessage,
+              variant: "destructive",
+            });
+          }
         }
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
@@ -189,6 +215,7 @@ const page = () => {
                 "Send"
               )}
             </Button>
+            <img src={ImageUrl} alt="" />
           </div>
         </div>
       </div>

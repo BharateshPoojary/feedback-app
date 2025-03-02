@@ -1,5 +1,9 @@
 import { NextRequest } from "next/server";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { responseContent } from "@/hooks/use-response";
 import path from "path";
@@ -12,6 +16,7 @@ export async function GET(request: NextRequest) {
       secretAccessKey: process.env.S3_SECRET_KEY as string,
     },
   });
+
   const { searchParams } = request.nextUrl;
   const file: string | null = searchParams.get("file");
   if (!file) {
@@ -54,16 +59,22 @@ export async function GET(request: NextRequest) {
   if (video_extensions.includes(fileextension)) {
     key = `videos/${file}`;
   }
-  const command = new PutObjectCommand({
+  const putObjectCommand = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: key,
   });
-  const getPresignedUrl = await getSignedUrl(client, command);
-  if (getPresignedUrl) {
+  const putPresignedUrl = await getSignedUrl(client, putObjectCommand);
+  const getObjectCommand = new GetObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: key,
+  });
+  const getPresignedUrl = await getSignedUrl(client, getObjectCommand);
+  if (getPresignedUrl && putPresignedUrl) {
     return Response.json(
       {
         success: true,
-        preSignedUrl: getPresignedUrl,
+        putPresignedUrl,
+        getPresignedUrl,
       },
       { status: 200 }
     );
