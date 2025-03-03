@@ -8,17 +8,18 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { responseContent } from "@/hooks/use-response";
 import path from "path";
 //This route will generate a presigned url for the file name sent form client and the presigned url is then sent to client for uploading work
+export const client = new S3Client({
+  region: process.env.S3_REGION as string,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY as string,
+    secretAccessKey: process.env.S3_SECRET_KEY as string,
+  },
+});
 export async function GET(request: NextRequest) {
-  const client = new S3Client({
-    region: process.env.S3_REGION as string,
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY as string,
-      secretAccessKey: process.env.S3_SECRET_KEY as string,
-    },
-  });
-
   const { searchParams } = request.nextUrl;
   const file: string | null = searchParams.get("file");
+  const fileType = searchParams.get("type");
+  console.log(fileType);
   if (!file) {
     return responseContent(false, "Please enter a valid file", 400);
   }
@@ -75,6 +76,8 @@ export async function GET(request: NextRequest) {
         success: true,
         putPresignedUrl,
         getPresignedUrl,
+        fileName: file,
+        key,
       },
       { status: 200 }
     );

@@ -13,7 +13,12 @@ export class IAMUserStack extends cdk.Stack {
     //"this" keyword represent the instance of this class(IAMUSERStack)  It tells that this User constructor or UserObject belongs to or comes under the scope of this IAMUSERSTACK class and the bharat-snaptalk-user  is a resource id which uniquely defines this user resource
     const policyStatement: PolicyStatement = new PolicyStatement({
       //creating a new policy object and defining the action and resources which we want to grant this user
-      actions: ["s3:PutObject", "s3:GetObject", "s3:ListBucket"], //get and put object allowed to this user
+      actions: [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject",
+      ], //get and put object allowed to this user
       resources: [
         "arn:aws:s3:::bharat-snaptalk-bucket",
         "arn:aws:s3:::bharat-snaptalk-bucket/*",

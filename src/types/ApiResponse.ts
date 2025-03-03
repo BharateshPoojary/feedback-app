@@ -8,4 +8,6 @@ export interface ApiResponse {
   messages?: Array<Message>;
   putPresignedUrl?: string;
   getPresignedUrl?: string;
+  fileName?: string;
+  key?: string;
 }
