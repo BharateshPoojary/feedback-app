@@ -68,7 +68,7 @@ const page = () => {
     setImageExtensionsAllowed(img_extensions);
     setVideoExtensionsAllowed(video_extensions);
   }, [mediaData]);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     console.log(acceptedFiles);
     if (acceptedFiles.length > 4) {
       toast({
@@ -108,83 +108,86 @@ const page = () => {
       ...allowedVideoTypes,
     ];
     let totalFileSize: number = 0;
-    acceptedFiles.forEach(async (file) => {
-      if (!allowedFileTypes.includes(file.type)) {
-        toast({
-          title: "You can upload only image and video file ",
-          variant: "destructive",
-        });
-        return;
-      }
-      totalFileSize += file.size;
-      console.log(totalFileSize);
-      const allowedFileSize = 41943040;
-      if (totalFileSize > allowedFileSize) {
-        toast({
-          title: "Total file size should not exceed 40MB",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const filename = file.name.replaceAll(" ", "-");
-      // const uniquefilename:Array<string> = [] ;
-      const uniquefilename = Date.now() + filename;
-
-      // console.log(object)
-      try {
-        setIsMediaUploading(true);
-        const putPresignedUrlRequest = await axios.get<ApiResponse>(
-          `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
-        );
-        if (putPresignedUrlRequest.data) {
-          const { putPresignedUrl, getPresignedUrl, fileName, key } =
-            putPresignedUrlRequest.data as {
-              putPresignedUrl: string;
-              getPresignedUrl: string;
-              fileName: string;
-              key: string;
-            };
-
-          try {
-            const uploadFileToS3Bucket = await axios.put(putPresignedUrl, file);
-            if (uploadFileToS3Bucket) {
-              console.log("File Uploaded successfully");
-            }
-            console.log(getPresignedUrl);
-
-            setMediaData((prev) => [
-              ...prev,
-              { getPresignedUrl, fileName, key },
-            ]);
-          } catch (error: unknown) {
-            let errorMessage = "Failed to upload file"; // Default message
-
-            if (error instanceof Error) {
-              errorMessage = error.message; // Extract error message from Error object
-            } else if (typeof error === "string") {
-              errorMessage = error; // Handle string errors
-            }
-
-            toast({
-              title: "Error",
-              description: errorMessage,
-              variant: "destructive",
-            });
-          }
+    const response = await Promise.all(
+      acceptedFiles.map(async (file) => {
+        if (!allowedFileTypes.includes(file.type)) {
+          toast({
+            title: "You can upload only image and video file ",
+            variant: "destructive",
+          });
+          return;
         }
-      } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>;
-        toast({
-          title: "Error",
-          description:
-            axiosError.response?.data.message || "Failed to upload file",
-          variant: "destructive",
-        });
-      } finally {
-        setIsMediaUploading(false);
-      }
-    });
+        totalFileSize += file.size;
+        console.log(totalFileSize);
+        const allowedFileSize = 41943040;
+        if (totalFileSize > allowedFileSize) {
+          toast({
+            title: "Total file size should not exceed 40MB",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const filename = file.name.replaceAll(" ", "-");
+        // const uniquefilename:Array<string> = [] ;
+        const uniquefilename = Date.now() + filename;
+
+        // console.log(object)
+        try {
+          setIsMediaUploading(true);
+          const putPresignedUrlRequest = await axios.get<ApiResponse>(
+            `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
+          );
+          if (putPresignedUrlRequest.data) {
+            const { putPresignedUrl, getPresignedUrl, fileName, key } =
+              putPresignedUrlRequest.data as {
+                putPresignedUrl: string;
+                getPresignedUrl: string;
+                fileName: string;
+                key: string;
+              };
+
+            try {
+              const uploadFileToS3Bucket = await axios.put(
+                putPresignedUrl,
+                file
+              );
+              if (uploadFileToS3Bucket) {
+                console.log("File Uploaded successfully");
+              }
+              console.log(getPresignedUrl);
+
+              return { getPresignedUrl, fileName, key };
+            } catch (error: unknown) {
+              let errorMessage = "Failed to upload file"; // Default message
+
+              if (error instanceof Error) {
+                errorMessage = error.message; // Extract error message from Error object
+              } else if (typeof error === "string") {
+                errorMessage = error; // Handle string errors
+              }
+
+              toast({
+                title: "Error",
+                description: errorMessage,
+                variant: "destructive",
+              });
+            }
+          }
+        } catch (error) {
+          const axiosError = error as AxiosError<ApiResponse>;
+          toast({
+            title: "Error",
+            description:
+              axiosError.response?.data.message || "Failed to upload file",
+            variant: "destructive",
+          });
+        } finally {
+          setIsMediaUploading(false);
+        }
+      })
+    );
+    setMediaData(response as MediaData[]);
   }, []);
 
   const username = params.username;
@@ -192,13 +195,7 @@ const page = () => {
   const handleClick = async (): Promise<void> => {
     console.log("Media Data", mediaData);
 
-    const filteredArray: MediaData[] = mediaData.filter(
-      (eachMediaData) =>
-        eachMediaData.getPresignedUrl !== "" &&
-        eachMediaData.fileName !== "" &&
-        eachMediaData.key !== ""
-    );
-    const keyString: string = filteredArray
+    const keyString: string = mediaData
       .map((eachMediaData) => eachMediaData.key)
       .join(",");
     console.log("KeyString", keyString);
@@ -313,55 +310,48 @@ const page = () => {
               )}
             </div>
             <div className="mt-5 grid min-[431px]:grid-cols-2 grid-cols-1 gap-4 max-[378px]:w-full ">
-              {mediaData
-                .filter(
-                  (eachMediaData) =>
-                    eachMediaData.getPresignedUrl !== "" &&
-                    eachMediaData.fileName !== "" &&
-                    eachMediaData.key !== ""
-                )
-                .map((eachMediaData, index) => (
-                  <div
-                    key={index}
-                    className="flex  max-[378px]:justify-center justify-top items-top"
-                  >
-                    {ImageExtensionsAllowed.includes(
-                      eachMediaData.key.split(".").pop() || ""
-                    ) && (
-                      <>
-                        <Image
-                          src={eachMediaData.getPresignedUrl}
-                          width={1000}
-                          height={1000}
-                          alt="UploadedImage"
-                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                        />
-                        <Trash2
-                          className="text-red-700 cursor-pointer"
-                          onClick={() => handleDelete(eachMediaData.fileName)}
-                        />
-                      </>
-                    )}
-                    {VideoExtensionsAllowed.includes(
-                      eachMediaData.key.split(".").pop() || ""
-                    ) && (
-                      <>
-                        {" "}
-                        <video
-                          src={eachMediaData.getPresignedUrl}
-                          controls
-                          width={1000}
-                          height={1000}
-                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                        ></video>
-                        <Trash2
-                          className="text-red-700 cursor-pointer"
-                          onClick={() => handleDelete(eachMediaData.fileName)}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
+              {mediaData.map((eachMediaData, index) => (
+                <div
+                  key={index}
+                  className="flex  max-[378px]:justify-center justify-top items-top"
+                >
+                  {ImageExtensionsAllowed.includes(
+                    eachMediaData.key.split(".").pop() || ""
+                  ) && (
+                    <>
+                      <Image
+                        src={eachMediaData.getPresignedUrl}
+                        width={1000}
+                        height={1000}
+                        alt="UploadedImage"
+                        className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
+                      />
+                      <Trash2
+                        className="text-red-700 cursor-pointer"
+                        onClick={() => handleDelete(eachMediaData.fileName)}
+                      />
+                    </>
+                  )}
+                  {VideoExtensionsAllowed.includes(
+                    eachMediaData.key.split(".").pop() || ""
+                  ) && (
+                    <>
+                      {" "}
+                      <video
+                        src={eachMediaData.getPresignedUrl}
+                        controls
+                        width={1000}
+                        height={1000}
+                        className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
+                      ></video>
+                      <Trash2
+                        className="text-red-700 cursor-pointer"
+                        onClick={() => handleDelete(eachMediaData.fileName)}
+                      />
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
           {/* File upload element */}

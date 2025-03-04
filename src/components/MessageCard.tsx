@@ -141,18 +141,10 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           });
         }
       };
-
       fetchPresignedUrls();
     }
-  }, []); // Empty dependency array ensures this runs only once
+  }, []); // Empty dependency array ensures this runs only once (each component has its own life cycle method) so useeffect will run once  her for each component  ensuring no dupliacte media  getting
 
-  // mediaPathfromDB.forEach(eachMediaPath => {
-  //   const getExtension = eachMediaPath.split(".").pop() || "";
-  //   if(img_extensions.includes(getExtension)){
-
-  //   }
-
-  // });
   return (
     <div>
       <Card>
