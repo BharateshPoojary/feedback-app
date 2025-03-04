@@ -5,7 +5,11 @@ import { Message } from "@/model/User";
 
 export async function POST(request: Request) {
   await dbConnection();
-  const { username, content }: { username: string; content: string } =
+  const {
+    username,
+    content,
+    mediaPath,
+  }: { username: string; content: string; mediaPath: string } =
     await request.json();
   try {
     console.log("Decoded username", username);
@@ -34,7 +38,7 @@ export async function POST(request: Request) {
       //   { status: 403 }
       // );
     }
-    const message = { content, createdAt: new Date() };
+    const message = { content, mediaPath, createdAt: new Date() };
     usernameinDB.messages.push(message as Message);
 
     /**Type Casting (as Message):

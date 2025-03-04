@@ -16,6 +16,7 @@ import { setTextArea } from "@/lib/features/textArea/textAreaSlice";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import "@/app/globals.css";
+import { AnyARecord } from "dns";
 const page = () => {
   type MediaData = {
     getPresignedUrl: string;
@@ -189,6 +190,19 @@ const page = () => {
   const username = params.username;
   const decodedusername = username.replace(/%20/g, " ");
   const handleClick = async (): Promise<void> => {
+    console.log("Media Data", mediaData);
+
+    const filteredArray: MediaData[] = mediaData.filter(
+      (eachMediaData) =>
+        eachMediaData.getPresignedUrl !== "" &&
+        eachMediaData.fileName !== "" &&
+        eachMediaData.key !== ""
+    );
+    const keyString: string = filteredArray
+      .map((eachMediaData) => eachMediaData.key)
+      .join(",");
+    console.log("KeyString", keyString);
+
     if (content.trim() === "") {
       toast({
         title: "Please enter a message",
@@ -200,6 +214,7 @@ const page = () => {
       const result = await axios.post<ApiResponse>("/api/send-message", {
         username: decodedusername,
         content,
+        mediaPath: keyString,
       });
       toast({ title: "Success", description: result.data?.message });
       dispatch(setTextArea(""));
@@ -250,7 +265,7 @@ const page = () => {
       });
     }
   };
-  console.log(mediaData);
+  // console.log(mediaData);
   return (
     <div className="max-w-full w-full h-[100vh]  flex flex-col sm:justify-between justify-evenly items-center">
       <div className="max-w-7xl w-full my-4 p-6 h-fit">
@@ -269,7 +284,7 @@ const page = () => {
               dispatch(setTextArea(e.target.value));
             }}
           />
-          <div className="flex  md:flex-row flex-col justify-between items-center">
+          <div className="flex  md:flex-row flex-col justify-between items-top">
             <div
               className={`drop-zone ${
                 mediaData.length > 4 ? "pointer-events-none opacity-50" : ""
@@ -318,7 +333,7 @@ const page = () => {
                           width={1000}
                           height={1000}
                           alt="UploadedImage"
-                          className="min-[1155px]:h-60  min-[1155px]:h-60 h-40 w-40 "
+                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
                         />
                         <Trash2
                           className="text-red-700 cursor-pointer"
@@ -336,7 +351,7 @@ const page = () => {
                           controls
                           width={1000}
                           height={1000}
-                          className="min-[1155px]:h-60  min-[1155px]:h-60 h-40 w-40 "
+                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
                         ></video>
                         <Trash2
                           className="text-red-700 cursor-pointer"
