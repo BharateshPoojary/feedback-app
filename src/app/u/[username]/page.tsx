@@ -218,6 +218,7 @@ const page = () => {
       });
       toast({ title: "Success", description: result.data?.message });
       dispatch(setTextArea(""));
+      setMediaData([{ getPresignedUrl: "", fileName: "", key: "" }]);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
