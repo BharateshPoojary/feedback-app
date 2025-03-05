@@ -3,7 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/model/User";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import {
   Card,
   CardDescription,
@@ -22,7 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"; //using the alert dialog
 import { Button } from "@/components/ui/button"; //using the button component
-import { Loader2, X } from "lucide-react"; //using X icon from lucide-react
+import { Download, Loader2, Maximize, X } from "lucide-react"; //using X icon from lucide-react
 import Image from "next/image";
 type MessageCardProps = {
   //using type aliases for custom type for Message card props
@@ -34,6 +35,7 @@ type MediaPath = {
   preSignedUrl: string;
 };
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
+  const ImageRef = useRef<Array<HTMLImageElement | null>>([]);
   const [mediaPath, setMediaPath] = useState<MediaPath[]>([
     { path: "", preSignedUrl: "" },
   ]);
@@ -144,7 +146,15 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
       fetchPresignedUrls();
     }
   }, []); // Empty dependency array ensures this runs only once (each component has its own life cycle method) so useeffect will run once  her for each component  ensuring no dupliacte media  getting
-
+  const handleFullScreen = (index: number) => {
+    const imageElement = ImageRef.current[index];
+    if (imageElement) {
+      imageElement.requestFullscreen();
+    }
+  };
+  const handleDownload = (url: string, fileName: string) => {
+    saveAs(url, fileName);
+  };
   return (
     <div>
       <Card>
@@ -192,13 +202,34 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                       eachMediaData.path.split(".").pop() || ""
                     ) && (
                       <>
-                        <Image
-                          src={eachMediaData.preSignedUrl}
-                          width={1000}
-                          height={1000}
-                          alt="UploadedImage"
-                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                        />
+                        <div className="relative w-40 h-40 min-[1155px]:w-60 min-[1155px]:h-60">
+                          <Image
+                            ref={(element) => {
+                              ImageRef.current[index] = element;
+                            }}
+                            src={eachMediaData.preSignedUrl}
+                            layout="fill"
+                            objectFit="cover"
+                            alt="Uploaded Image"
+                            className="rounded-md"
+                          />
+                          <div className="absolute bottom-2 right-2 flex gap-2 bg-black/50 p-2 rounded-md">
+                            <button>
+                              <Download
+                                className="text-white w-5 h-5"
+                                onClick={() =>
+                                  handleDownload(
+                                    eachMediaData.preSignedUrl,
+                                    `bharat-snaptalk-${Date.now()}`
+                                  )
+                                }
+                              />
+                            </button>
+                            <button onClick={() => handleFullScreen(index)}>
+                              <Maximize className="text-white w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
                       </>
                     )}
                     {video_extensions.includes(
