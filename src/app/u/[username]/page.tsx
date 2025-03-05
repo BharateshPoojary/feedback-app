@@ -240,7 +240,7 @@ const page = () => {
   }
   const handleDelete = async (deleteFileName: string) => {
     try {
-      // console.log(fileName);
+      console.log("File Name", deleteFileName);
       const result = await axios.delete<ApiResponse>(
         `/api/delete-object/${deleteFileName}`
       );

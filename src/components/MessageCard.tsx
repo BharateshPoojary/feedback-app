@@ -47,9 +47,33 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
       const response = await axios.delete<ApiResponse>(
         `/api/delete-message/${message._id}`
       ); //sending the messageId in url params
-      toast({
-        title: response.data.message,
-      });
+      if (mediaPath.length > 0) {
+        const getDeleteResponse = await Promise.all(
+          mediaPath.map(async (eachMediaPath) => {
+            const getFileName = eachMediaPath.path.split("/").pop();
+            try {
+              const response = await axios.delete<ApiResponse>(
+                `/api/delete-object/${getFileName}`
+              );
+              return response.data.success;
+            } catch (error) {
+              const axiosError = error as AxiosError<ApiResponse>;
+              return (
+                axiosError.response?.data.message || "Failed to delete object"
+              );
+            }
+          })
+        );
+        if (getDeleteResponse) {
+          toast({
+            title: response.data.message,
+          });
+        } else {
+          toast({
+            title: getDeleteResponse,
+          });
+        }
+      }
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
