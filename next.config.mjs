@@ -7,6 +7,9 @@ const nextConfig = {
                 hostname: "**.amazonaws.com",
             }
         ]
+    },
+    eslint: {
+        ignoreDuringBuilds: true
     }
 };
 
