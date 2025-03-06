@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import dbConnection from "@/lib/dbConnect";
 import { OauthUserModel, CredUserModel, UserModel } from "@/model/User";
 import type { NextAuthOptions } from "next-auth";
-
+import { User } from "@/model/User";
 // we can place options.ts file anywhere but the thing is it should be injected inside the [...nextauth] file
 //as here we are just writing options after wards it will be injected in a route where it will actual work as API
 export const authOptions: NextAuthOptions = {
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(
         credentials: Record<"identifier" | "password", string>
-      ): Promise<any> {
+      ): Promise<User | any> {
         await dbConnection();
         try {
           const user = await CredUserModel.findOne({
@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier as string }, //identifier can refer to email or username
             ],
           });
+          if (!user) return null;
           //console.log("User", user);
           if (!user) {
             throw new Error("No user found with this credentials");
