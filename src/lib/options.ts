@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
         identifier: {},
         password: {},
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(
         credentials: Record<"identifier" | "password", string>
       ): Promise<User | any> {
@@ -50,7 +51,7 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier as string }, //identifier can refer to email or username
             ],
           });
-          if (!user) return null;
+
           //console.log("User", user);
           if (!user) {
             throw new Error("No user found with this credentials");
