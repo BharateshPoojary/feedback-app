@@ -42,6 +42,8 @@ export const authOptions: NextAuthOptions = {
       async authorize(
         credentials: Record<"identifier" | "password", string>
       ): Promise<User | any> {
+        if (!credentials) return null;
+
         await dbConnection();
         try {
           const user = await CredUserModel.findOne({
