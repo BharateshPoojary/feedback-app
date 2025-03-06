@@ -44,8 +44,8 @@ export const authOptions: NextAuthOptions = {
           const user = await CredUserModel.findOne({
             $or: [
               // $or: A MongoDB operator that checks if either the email or username matches the identifier provided.
-              { useremail: credentials.identifier },
-              { username: credentials.identifier }, //identifier can refer to email or username
+              { useremail: credentials.identifier as string },
+              { username: credentials.identifier as string }, //identifier can refer to email or username
             ],
           });
           //console.log("User", user);
