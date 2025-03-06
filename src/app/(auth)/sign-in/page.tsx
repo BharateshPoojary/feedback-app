@@ -21,7 +21,7 @@ import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
-const page = () => {
+const SigninPage = () => {
   const [issubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -151,4 +151,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SigninPage;

@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, RefreshCcw } from "lucide-react";
 import MessageCard from "@/components/MessageCard";
-const page = () => {
+const DashboardPage = () => {
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   const [Messages, setMessages] = useState<Message[]>([]); //to store all the messages in an array
   const [isLoading, setIsLoading] = useState(false); // To ensure loading   when new messages arrive on clicking refresh button
@@ -231,4 +231,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default DashboardPage;

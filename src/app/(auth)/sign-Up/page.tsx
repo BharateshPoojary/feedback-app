@@ -33,7 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-const page = () => {
+const SignupPage = () => {
   const [username, setUsername] = useState("");
   //state for storing username
   const [usernamereqmsg, setUserNameReqMsg] = useState("");
@@ -239,4 +239,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignupPage;

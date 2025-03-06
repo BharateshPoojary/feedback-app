@@ -194,7 +194,7 @@ const CarouselItem = React.forwardRef<
 CarouselItem.displayName = "CarouselItem";
 
 const CarouselIndicators = () => {
-  const { selectedIndex, setSelectedIndex, api } = useCarousel();
+  const { selectedIndex, api } = useCarousel();
   const [slideCount, setSlideCount] = React.useState(0);
 
   React.useEffect(() => {

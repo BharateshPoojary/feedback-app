@@ -55,17 +55,19 @@ export async function POST(request: Request) {
     //   },
     //   { status: 200 }
     // );
-  } catch (error) {
-    //error while updating the user
-    //console.log("Error updating the user acceptance", error);
-    return responseContent(false, "Error updating user acceptance", 500);
-    // return Response.json(
-    //   {
-    //     success: false,
-    //     message: "Error updating user acceptance",
-    //   },
-    //   { status: 500 }
-    // );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return responseContent(
+        false,
+        `Error updating user acceptance: ${error.message}`,
+        500
+      );
+    }
+    return responseContent(
+      false,
+      "Unknown error occurred while updating user acceptance",
+      500
+    );
   }
 }
 //GET request is accessing the user isAcceptingMessage property
@@ -105,16 +107,18 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
-    //error while updating the user
-    //console.log("Error accesing the userId", error);
-    return responseContent(false, "Error accessing the userId", 500);
-    // return Response.json(
-    //   {
-    //     success: false,
-    //     message: "Error accesing the userId",
-    //   },
-    //   { status: 500 }
-    // );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return responseContent(
+        false,
+        `Error updating user acceptance: ${error.message}`,
+        500
+      );
+    }
+    return responseContent(
+      false,
+      "Unknown error occurred while updating user acceptance",
+      500
+    );
   }
 }

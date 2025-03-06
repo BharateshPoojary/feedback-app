@@ -23,7 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"; //using the alert dialog
 import { Button } from "@/components/ui/button"; //using the button component
-import { Download, Loader2, Maximize, X } from "lucide-react"; //using X icon from lucide-react
+import { Download, Maximize, X } from "lucide-react"; //using X icon from lucide-react
 import Image from "next/image";
 type MessageCardProps = {
   //using type aliases for custom type for Message card props

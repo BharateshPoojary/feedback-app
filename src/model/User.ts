@@ -25,9 +25,6 @@ export interface User extends Document {
   // a base Model i.e. UserModel
 }
 
-// OAuth User Interface
-export interface OauthUser extends User {} //The oauth user is not having any additional fields
-
 // Cred User Interface (Includes password & verification fields)
 export interface CredUser extends User {
   password: string;
@@ -66,7 +63,7 @@ const existingDiscriminators = UserModel.discriminators || {};
 // This prevents re-creating a discriminator if it already exists.
 // OAuth User Schema (No password)
 
-const OauthUserSchema = new Schema<OauthUser>({}); //as it is having no additional fields and we already defined  base UserSchema we can leave it as an empty object
+const OauthUserSchema = new Schema<User>({}); //as it is having no additional fields and we already defined  base UserSchema we can leave it as an empty object
 const CredUserSchema = new Schema<CredUser>({
   //CredUserSchema includes additional fields so we have to just define the schema for that additional fileds only
   password: { type: String, required: true },
@@ -77,7 +74,7 @@ const CredUserSchema = new Schema<CredUser>({
 // Only Create Discriminators If They Do Not Exist
 const OauthUserModel =
   existingDiscriminators["oauth"] || //if not creating the discriminator model for first time it will select the existing discriminator with the key oauth which points to oauthUserModel
-  UserModel.discriminator<OauthUser>("oauth", OauthUserSchema); //If creating for first time it will create the new child  model as OauthuserModel which is a submodel under  base UserModel where  oauth is the value for the discriminator key "authtype".
+  UserModel.discriminator<User>("oauth", OauthUserSchema); //If creating for first time it will create the new child  model as OauthuserModel which is a submodel under  base UserModel where  oauth is the value for the discriminator key "authtype".
 // which means if we save the document using OauthUserModel instance it will automatically add field as "authType":"oauth"
 
 const CredUserModel = // the  same is for CredUserModel as Oauth userModel (but the thing is Cred user is having additional fileds )

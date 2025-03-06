@@ -16,8 +16,7 @@ import { setTextArea } from "@/lib/features/textArea/textAreaSlice";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import "@/app/globals.css";
-import { AnyARecord } from "dns";
-const page = () => {
+const UsernamePage = () => {
   type MediaData = {
     getPresignedUrl: string;
     fileName: string;
@@ -67,128 +66,131 @@ const page = () => {
   useEffect(() => {
     setImageExtensionsAllowed(img_extensions);
     setVideoExtensionsAllowed(video_extensions);
-  }, [mediaData]);
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    console.log(acceptedFiles);
-    if (acceptedFiles.length > 4) {
-      toast({
-        title: "Maximun 4 files can be sent at a time",
-        variant: "destructive",
-      });
-      return;
-    }
-    const allowedImageTypes: Array<string> = [
-      "image/apng",
-      "image/avif",
-      "image/gif",
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/svg+xml",
-      "image/webp",
-      "image/bmp",
-      "image/tiff",
-      "image/x-icon",
-    ];
-    const allowedVideoTypes: Array<string> = [
-      "video/mp4",
-      "video/webm",
-      "video/ogg",
-      "video/avi",
-      "video/mpeg",
-      "video/quicktime",
-      "video/x-ms-wmv",
-      "video/x-flv",
-      "video/3gpp",
-      "video/3gpp2",
-      "video/x-matroska",
-    ];
-    const allowedFileTypes: Array<string> = [
-      ...allowedImageTypes,
-      ...allowedVideoTypes,
-    ];
-    let totalFileSize: number = 0;
-    const response = await Promise.all(
-      acceptedFiles.map(async (file) => {
-        if (!allowedFileTypes.includes(file.type)) {
-          toast({
-            title: "You can upload only image and video file ",
-            variant: "destructive",
-          });
-          return;
-        }
-        totalFileSize += file.size;
-        console.log(totalFileSize);
-        const allowedFileSize = 41943040;
-        if (totalFileSize > allowedFileSize) {
-          toast({
-            title: "Total file size should not exceed 40MB",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        const filename = file.name.replaceAll(" ", "-");
-        // const uniquefilename:Array<string> = [] ;
-        const uniquefilename = Date.now() + filename;
-
-        // console.log(object)
-        try {
-          setIsMediaUploading(true);
-          const putPresignedUrlRequest = await axios.get<ApiResponse>(
-            `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
-          );
-          if (putPresignedUrlRequest.data) {
-            const { putPresignedUrl, getPresignedUrl, fileName, key } =
-              putPresignedUrlRequest.data as {
-                putPresignedUrl: string;
-                getPresignedUrl: string;
-                fileName: string;
-                key: string;
-              };
-
-            try {
-              const uploadFileToS3Bucket = await axios.put(
-                putPresignedUrl,
-                file
-              );
-              if (uploadFileToS3Bucket) {
-                console.log("File Uploaded successfully");
-              }
-              console.log(getPresignedUrl);
-
-              return { getPresignedUrl, fileName, key };
-            } catch (error: unknown) {
-              let errorMessage = "Failed to upload file"; // Default message
-
-              if (error instanceof Error) {
-                errorMessage = error.message; // Extract error message from Error object
-              } else if (typeof error === "string") {
-                errorMessage = error; // Handle string errors
-              }
-
-              toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-              });
-            }
+  }, [mediaData, img_extensions, video_extensions]);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      console.log(acceptedFiles);
+      if (acceptedFiles.length > 4) {
+        toast({
+          title: "Maximun 4 files can be sent at a time",
+          variant: "destructive",
+        });
+        return;
+      }
+      const allowedImageTypes: Array<string> = [
+        "image/apng",
+        "image/avif",
+        "image/gif",
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/svg+xml",
+        "image/webp",
+        "image/bmp",
+        "image/tiff",
+        "image/x-icon",
+      ];
+      const allowedVideoTypes: Array<string> = [
+        "video/mp4",
+        "video/webm",
+        "video/ogg",
+        "video/avi",
+        "video/mpeg",
+        "video/quicktime",
+        "video/x-ms-wmv",
+        "video/x-flv",
+        "video/3gpp",
+        "video/3gpp2",
+        "video/x-matroska",
+      ];
+      const allowedFileTypes: Array<string> = [
+        ...allowedImageTypes,
+        ...allowedVideoTypes,
+      ];
+      let totalFileSize: number = 0;
+      const response = await Promise.all(
+        acceptedFiles.map(async (file) => {
+          if (!allowedFileTypes.includes(file.type)) {
+            toast({
+              title: "You can upload only image and video file ",
+              variant: "destructive",
+            });
+            return;
           }
-        } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          toast({
-            title: "Error",
-            description:
-              axiosError.response?.data.message || "Failed to upload file",
-            variant: "destructive",
-          });
-        } finally {
-          setIsMediaUploading(false);
-        }
-      })
-    );
-    setMediaData(response as MediaData[]);
-  }, []);
+          totalFileSize += file.size;
+          console.log(totalFileSize);
+          const allowedFileSize = 41943040;
+          if (totalFileSize > allowedFileSize) {
+            toast({
+              title: "Total file size should not exceed 40MB",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          const filename = file.name.replaceAll(" ", "-");
+          // const uniquefilename:Array<string> = [] ;
+          const uniquefilename = Date.now() + filename;
+
+          // console.log(object)
+          try {
+            setIsMediaUploading(true);
+            const putPresignedUrlRequest = await axios.get<ApiResponse>(
+              `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
+            );
+            if (putPresignedUrlRequest.data) {
+              const { putPresignedUrl, getPresignedUrl, fileName, key } =
+                putPresignedUrlRequest.data as {
+                  putPresignedUrl: string;
+                  getPresignedUrl: string;
+                  fileName: string;
+                  key: string;
+                };
+
+              try {
+                const uploadFileToS3Bucket = await axios.put(
+                  putPresignedUrl,
+                  file
+                );
+                if (uploadFileToS3Bucket) {
+                  console.log("File Uploaded successfully");
+                }
+                console.log(getPresignedUrl);
+
+                return { getPresignedUrl, fileName, key };
+              } catch (error: unknown) {
+                let errorMessage = "Failed to upload file"; // Default message
+
+                if (error instanceof Error) {
+                  errorMessage = error.message; // Extract error message from Error object
+                } else if (typeof error === "string") {
+                  errorMessage = error; // Handle string errors
+                }
+
+                toast({
+                  title: "Error",
+                  description: errorMessage,
+                  variant: "destructive",
+                });
+              }
+            }
+          } catch (error) {
+            const axiosError = error as AxiosError<ApiResponse>;
+            toast({
+              title: "Error",
+              description:
+                axiosError.response?.data.message || "Failed to upload file",
+              variant: "destructive",
+            });
+          } finally {
+            setIsMediaUploading(false);
+          }
+        })
+      );
+      setMediaData(response as MediaData[]);
+    },
+    [toast]
+  );
 
   const username = params.username;
   const decodedusername = username.replace(/%20/g, " ");
@@ -305,7 +307,8 @@ const page = () => {
               ) : (
                 <p className="drag-files">
                   {" "}
-                  Drag 'n' drop some files here,or click to select files{" "}
+                  Drag &apos;n&apos; drop some files here,or click to select
+                  files{" "}
                 </p>
               )}
             </div>
@@ -392,4 +395,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default UsernamePage;

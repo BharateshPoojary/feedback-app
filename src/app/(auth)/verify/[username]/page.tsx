@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 
-const verifyAccount = () => {
+const VerifyAccount = () => {
   const [isCodeVerifying, setIsCodeVerifying] = useState(false);
   const params = useParams<{ username: string }>(); //It allows to read the dynamic params of the current url username is our dynamic param
   const router = useRouter();
@@ -97,4 +97,4 @@ const verifyAccount = () => {
   );
 };
 
-export default verifyAccount;
+export default VerifyAccount;

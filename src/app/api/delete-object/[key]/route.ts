@@ -1,10 +1,16 @@
 import { responseContent } from "@/hooks/use-response";
-import { client } from "../../presigned-url/route";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 export async function DELETE(
   request: Request,
   { params }: { params: { key: string } }
 ) {
+  const client = new S3Client({
+    region: process.env.S3_REGION as string,
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY as string,
+      secretAccessKey: process.env.S3_SECRET_KEY as string,
+    },
+  });
   const key = params.key;
   const img_extensions: string[] = [
     "apng",
@@ -52,7 +58,18 @@ export async function DELETE(
     await client.send(deleteCommand);
 
     return responseContent(true, "Media deleted successfully", 200);
-  } catch (error) {
-    return responseContent(false, "Error deleting media", 500);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return responseContent(
+        false,
+        `Error deleting user object: ${error.message}`,
+        500
+      );
+    }
+    return responseContent(
+      false,
+      "Unknown error occurred while deleting user object",
+      500
+    );
   }
 }

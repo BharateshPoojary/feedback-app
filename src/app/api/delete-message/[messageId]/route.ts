@@ -61,20 +61,18 @@ export async function DELETE(
     //   },
     //   { status: 200 } //200 request was successful
     // );
-  } catch (error) {
-    //handling other errors
-    //console.log(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return responseContent(
+        false,
+        `Error deleting user message: ${error.message}`,
+        500
+      );
+    }
     return responseContent(
       false,
-      "User not found or  error updating user",
-      404
+      "Unknown error occurred while deleting user message",
+      500
     );
-    // return Response.json(
-    //   {
-    //     success: false,
-    //     message: "User not found or  error updating user",
-    //   },
-    //   { status: 404 }
-    // );
   }
 }

@@ -89,14 +89,18 @@ export async function POST(request: Request) {
       //   { status: 200 } //Request Succeeded
       // );
     }
-  } catch (error) {
-    return responseContent(false, "Error verifying code", 500);
-    // return Response.json(
-    //   {
-    //     success: false,
-    //     message: "Error verifying code",
-    //   },
-    //   { status: 500 } //Internal server error
-    // );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return responseContent(
+        false,
+        `Error verifying account : ${error.message}`,
+        500
+      );
+    }
+    return responseContent(
+      false,
+      "Unknown error occurred while verifying your account",
+      500
+    );
   }
 }

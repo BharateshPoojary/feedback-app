@@ -38,8 +38,7 @@ export const authOptions: NextAuthOptions = {
         identifier: {},
         password: {},
       },
-      async authorize(credentials: any): Promise<any> {
-        //A function to handle custom logic for authenticating users when they log in.
+      async authorize(credentials) {
         await dbConnection();
         try {
           const user = await CredUserModel.findOne({
@@ -67,8 +66,11 @@ export const authOptions: NextAuthOptions = {
               "Password mismatched.please try to login with correct credentials"
             );
           }
-        } catch (err: any) {
-          throw new Error(err);
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            throw new Error(err.message);
+          }
+          throw new Error(String(err));
         }
       },
     }),
@@ -130,8 +132,11 @@ export const authOptions: NextAuthOptions = {
             token.isAcceptingMessages = creatingnewuser.isAcceptingMessages;
             token.username = creatingnewuser.username;
           }
-        } catch (error: any) {
-          throw new Error(error);
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            throw new Error(err.message);
+          }
+          throw new Error(String(err));
         }
       }
       console.log("Final JWT Token:", token);
