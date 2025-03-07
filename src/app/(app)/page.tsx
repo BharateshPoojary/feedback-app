@@ -22,7 +22,7 @@ const Home = () => {
 
     {
       id: 2,
-      content: "Get Image , Videos,audios ,text from an anonymous",
+      content: "Get Image,Videos and text from an anonymous",
     },
     {
       id: 3,
