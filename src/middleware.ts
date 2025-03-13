@@ -69,6 +69,6 @@ export const config = {
     "/dashboard/:path* ",
     "/sign-in",
     "/sign-Up",
-    "/verify:path*",
+    "/verify/:path*",
   ],
 };
