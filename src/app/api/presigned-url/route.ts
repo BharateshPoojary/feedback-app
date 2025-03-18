@@ -70,6 +70,16 @@ export async function GET(request: NextRequest) {
     Key: key,
   });
   const getPresignedUrl = await getSignedUrl(client, getObjectCommand);
+  console.log(
+    "putPresignedUrl",
+    putPresignedUrl,
+    "getPresignedUrl",
+    getPresignedUrl,
+    "file",
+    file,
+    "Key",
+    key
+  );
   if (getPresignedUrl && putPresignedUrl) {
     return Response.json(
       {

@@ -28,9 +28,7 @@ const UsernamePage = () => {
   const params = useParams<{ username: string }>();
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMediaUploading, setIsMediaUploading] = useState<boolean>(false);
-  const [mediaData, setMediaData] = useState<MediaData[]>([
-    { getPresignedUrl: "", fileName: "", key: "" },
-  ]);
+  const [mediaData, setMediaData] = useState<MediaData[]>([]);
   const [ImageExtensionsAllowed, setImageExtensionsAllowed] = useState<
     string[]
   >([]);
@@ -66,7 +64,7 @@ const UsernamePage = () => {
   useEffect(() => {
     setImageExtensionsAllowed(img_extensions);
     setVideoExtensionsAllowed(video_extensions);
-  }, [mediaData, img_extensions, video_extensions]);
+  }, []);
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       console.log(acceptedFiles);
@@ -108,86 +106,90 @@ const UsernamePage = () => {
         ...allowedVideoTypes,
       ];
       let totalFileSize: number = 0;
-      const response = await Promise.all(
-        acceptedFiles.map(async (file) => {
-          if (!allowedFileTypes.includes(file.type)) {
-            toast({
-              title: "You can upload only image and video file ",
-              variant: "destructive",
-            });
-            return;
-          }
-          totalFileSize += file.size;
-          console.log(totalFileSize);
-          const allowedFileSize = 41943040;
-          if (totalFileSize > allowedFileSize) {
-            toast({
-              title: "Total file size should not exceed 40MB",
-              variant: "destructive",
-            });
-            return;
-          }
 
-          const filename = file.name.replaceAll(" ", "-");
-          // const uniquefilename:Array<string> = [] ;
-          const uniquefilename = Date.now() + filename;
+      acceptedFiles.map(async (file) => {
+        if (!allowedFileTypes.includes(file.type)) {
+          toast({
+            title: "You can upload only image and video file ",
+            variant: "destructive",
+          });
+          return null;
+        }
+        totalFileSize += file.size;
+        console.log(totalFileSize);
+        const allowedFileSize = 41943040;
+        if (totalFileSize > allowedFileSize) {
+          toast({
+            title: "Total file size should not exceed 40MB",
+            variant: "destructive",
+          });
+          return null;
+        }
 
-          // console.log(object)
-          try {
-            setIsMediaUploading(true);
-            const putPresignedUrlRequest = await axios.get<ApiResponse>(
-              `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
-            );
-            if (putPresignedUrlRequest.data) {
-              const { putPresignedUrl, getPresignedUrl, fileName, key } =
-                putPresignedUrlRequest.data as {
-                  putPresignedUrl: string;
-                  getPresignedUrl: string;
-                  fileName: string;
-                  key: string;
-                };
+        const filename = file.name.replaceAll(" ", "-");
+        // const uniquefilename:Array<string> = [] ;
+        const uniquefilename = Date.now() + filename;
 
-              try {
-                const uploadFileToS3Bucket = await axios.put(
-                  putPresignedUrl,
-                  file
-                );
-                if (uploadFileToS3Bucket) {
-                  console.log("File Uploaded successfully");
+        // console.log(object)
+        try {
+          setIsMediaUploading(true);
+          const putPresignedUrlRequest = await axios.get<ApiResponse>(
+            `/api/presigned-url?file=${uniquefilename}&type=${file.type}`
+          );
+          if (putPresignedUrlRequest.data) {
+            const { putPresignedUrl, getPresignedUrl, fileName, key } =
+              putPresignedUrlRequest.data as {
+                putPresignedUrl: string;
+                getPresignedUrl: string;
+                fileName: string;
+                key: string;
+              };
+            console.log("Put data ", putPresignedUrlRequest.data);
+            try {
+              const uploadFileToS3Bucket = await axios.put(
+                putPresignedUrl,
+                file,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
                 }
+              );
+              if (uploadFileToS3Bucket) {
+                console.log("File Uploaded successfully");
                 console.log(getPresignedUrl);
-
-                return { getPresignedUrl, fileName, key };
-              } catch (error: unknown) {
-                let errorMessage = "Failed to upload file"; // Default message
-
-                if (error instanceof Error) {
-                  errorMessage = error.message; // Extract error message from Error object
-                } else if (typeof error === "string") {
-                  errorMessage = error; // Handle string errors
-                }
-
-                toast({
-                  title: "Error",
-                  description: errorMessage,
-                  variant: "destructive",
-                });
+                setMediaData((prev) => [
+                  ...prev,
+                  { getPresignedUrl, fileName, key },
+                ]);
               }
+            } catch (error: unknown) {
+              let errorMessage = "Failed to upload file"; // Default message
+              if (error instanceof Error) {
+                errorMessage = error.message; // Extract error message from Error object
+              } else if (typeof error === "string") {
+                errorMessage = error; // Handle string errors
+              }
+
+              toast({
+                title: "Error uploading",
+                description: errorMessage,
+                variant: "destructive",
+              });
             }
-          } catch (error) {
-            const axiosError = error as AxiosError<ApiResponse>;
-            toast({
-              title: "Error",
-              description:
-                axiosError.response?.data.message || "Failed to upload file",
-              variant: "destructive",
-            });
-          } finally {
-            setIsMediaUploading(false);
           }
-        })
-      );
-      setMediaData(response as MediaData[]);
+        } catch (error) {
+          const axiosError = error as AxiosError<ApiResponse>;
+          toast({
+            title: "Error",
+            description:
+              axiosError.response?.data.message || "Failed to upload file",
+            variant: "destructive",
+          });
+        } finally {
+          setIsMediaUploading(false);
+        }
+      });
     },
     [toast]
   );
@@ -217,7 +219,7 @@ const UsernamePage = () => {
       });
       toast({ title: "Success", description: result.data?.message });
       dispatch(setTextArea(""));
-      setMediaData([{ getPresignedUrl: "", fileName: "", key: "" }]);
+      setMediaData([]);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
