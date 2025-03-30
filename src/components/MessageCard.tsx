@@ -49,6 +49,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
       ); //sending the messageId in url params
       if (mediaPath.length > 0) {
         const getDeleteResponse = await Promise.all(
+          //This will return an array of object
           mediaPath.map(async (eachMediaPath) => {
             const getFileName = eachMediaPath.path.split("/").pop();
             try {
