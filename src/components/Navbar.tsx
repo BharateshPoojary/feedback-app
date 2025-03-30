@@ -14,7 +14,7 @@ const Navbar = () => {
       <nav className="w-full p-5 shadow-md bg-gray-900 rounded-br-full text-white h-28 flex  items-center">
         <div className="container flex min-[530px]:flex-row flex-col   min-[530px]:justify-between justify-evenly items-start">
           <span className="text-xl min-[357px]:text-2xl sm:text-4xl">
-            Bharat Feedback App
+            Anonytalks
           </span>
           <div className="flex flex-row  ">
             {session ? (
