@@ -16,9 +16,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 const VerifyAccount = () => {
   const [isCodeVerifying, setIsCodeVerifying] = useState(false);
@@ -55,7 +63,7 @@ const VerifyAccount = () => {
   };
   return (
     <div className="flex justify-center items-center bg-slate-800 min-h-screen">
-      <div className="w-1/2 max-w-md p-5 bg-white rounded-md shadow-xl">
+      <div className=" w-3/4 sm:w-1/2 max-w-md p-5 bg-white rounded-md shadow-xl">
         <div className="text-center">
           <h1 className=" font-extrabold tracking-tight lg:text-4xl mb-6">
             Verification Code{" "}
@@ -66,16 +74,35 @@ const VerifyAccount = () => {
           {/* we have to use spread operator here so that Form element can have access to all methods of
         useForm here it need watch , setvalue etc and many more methods so the best way is to use spread operator 
         so that it has access to each object of useForm  */}
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 flex flex-col justify-center items-center"
+          >
             <FormField
               control={form.control} //This object contains methods for registering components into React Hook Form.
               // do not access any of the properties inside this object directly. It's for internal usage only.
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Verification Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="verification code" {...field} />
+                    <InputOTP
+                      maxLength={6}
+                      pattern={REGEXP_ONLY_DIGITS}
+                      {...field}
+                      className="w-5"
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                      </InputOTPGroup>
+                      <InputOTPSeparator />
+                      <InputOTPGroup>
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
