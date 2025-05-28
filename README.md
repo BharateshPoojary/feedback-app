@@ -1,7 +1,7 @@
-📄 ##PDF Summarizer using LLM
+## PDF Summarizer using LLM
 A powerful LLM-based PDF summarizer web application that allows users to interact with the content of any uploaded PDF using natural language. Built to enhance productivity by enabling quick content extraction, Q&A, and conversation history.
 
-✨ Features
+## Features
 🔐 User Authentication
 Sign up using your email and password. After registration, enter the verification code to access the app.
 
