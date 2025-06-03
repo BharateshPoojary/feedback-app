@@ -3,7 +3,7 @@ AnonyTalks is a web application that enables users to receive anonymous feedback
 
 ## Features
 ### 🔐  User Authentication
-Sign up using your email and password. After registration, enter the verification code to access the app🔐 Authentication
+Sign up using your email and password. After registration, enter the verification code to access the app
 
 Sign up with email/password
 
@@ -45,7 +45,7 @@ Feedback instantly appears in the owner's dashboard
 
 ### 2. After verification, they are redirected to their dashboard.
 
-### 3. A unique link is generated (e.g., https://anonytalks.co.in/u/<username>).
+### 3. A unique link is generated (e.g., https://anonytalks.co.in/u/username).
 
 ### 4. User can share this link to receive anonymous feedback.
 
@@ -108,7 +108,4 @@ AUTH_SECRET="<YOUR_AUTH_SECRET>"
 
 ## 📄 License
 ### This project is open-source under the MIT License.
-
-
-### NOTE: Do not ask question apart from the content of PDF you uploaded as this llm is tuned only  to answer about the user uploaded pdf.
 
