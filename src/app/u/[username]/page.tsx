@@ -16,25 +16,32 @@ import { setTextArea } from "@/lib/features/textArea/textAreaSlice";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import "@/app/globals.css";
-const UsernamePage = () => {
-  type MediaData = {
-    getPresignedUrl: string;
-    fileName: string;
-    key: string;
-  };
-  const dispatch: AppDispatch = useDispatch();
-  const { content } = useSelector((state: RootState) => state.textArea);
-  const { toast } = useToast();
-  const params = useParams<{ username: string }>();
-  const [isSending, setIsSending] = useState<boolean>(false);
-  const [isMediaUploading, setIsMediaUploading] = useState<boolean>(false);
-  const [mediaData, setMediaData] = useState<MediaData[]>([]);
-  const [ImageExtensionsAllowed, setImageExtensionsAllowed] = useState<
-    string[]
-  >([]);
-  const [VideoExtensionsAllowed, setVideoExtensionsAllowed] = useState<
-    string[]
-  >([]);
+const allowedImageTypes: Array<string> = [
+  "image/apng",
+  "image/avif",
+  "image/gif",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/svg+xml",
+  "image/webp",
+  "image/bmp",
+  "image/tiff",
+  "image/x-icon",
+];
+const allowedVideoTypes: Array<string> = [
+  "video/mp4",
+  "video/webm",
+  "video/ogg",
+  "video/avi",
+  "video/mpeg",
+  "video/quicktime",
+  "video/x-ms-wmv",
+  "video/x-flv",
+  "video/3gpp",
+  "video/3gpp2",
+  "video/x-matroska",
+];
   const img_extensions: string[] = [
     "apng",
     "avif",
@@ -61,6 +68,26 @@ const UsernamePage = () => {
     "3g2", // 3gpp2
     "mkv", // x-matroska
   ];
+const UsernamePage = () => {
+  type MediaData = {
+    getPresignedUrl: string;
+    fileName: string;
+    key: string;
+  };
+  const dispatch: AppDispatch = useDispatch();
+  const { content } = useSelector((state: RootState) => state.textArea);
+  const { toast } = useToast();
+  const params = useParams<{ username: string }>();
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [isMediaUploading, setIsMediaUploading] = useState<boolean>(false);
+  const [mediaData, setMediaData] = useState<MediaData[]>([]);
+  const [ImageExtensionsAllowed, setImageExtensionsAllowed] = useState<
+    string[]
+  >([]);
+  const [VideoExtensionsAllowed, setVideoExtensionsAllowed] = useState<
+    string[]
+  >([]);
+
   useEffect(() => {
     setImageExtensionsAllowed(img_extensions);
     setVideoExtensionsAllowed(video_extensions);
@@ -75,32 +102,7 @@ const UsernamePage = () => {
         });
         return;
       }
-      const allowedImageTypes: Array<string> = [
-        "image/apng",
-        "image/avif",
-        "image/gif",
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/svg+xml",
-        "image/webp",
-        "image/bmp",
-        "image/tiff",
-        "image/x-icon",
-      ];
-      const allowedVideoTypes: Array<string> = [
-        "video/mp4",
-        "video/webm",
-        "video/ogg",
-        "video/avi",
-        "video/mpeg",
-        "video/quicktime",
-        "video/x-ms-wmv",
-        "video/x-flv",
-        "video/3gpp",
-        "video/3gpp2",
-        "video/x-matroska",
-      ];
+
       const allowedFileTypes: Array<string> = [
         ...allowedImageTypes,
         ...allowedVideoTypes,
@@ -113,7 +115,7 @@ const UsernamePage = () => {
             title: "You can upload only image and video file ",
             variant: "destructive",
           });
-          return null;
+          return;
         }
         totalFileSize += file.size;
         console.log(totalFileSize);
@@ -288,9 +290,8 @@ const UsernamePage = () => {
           />
           <div className="flex  md:flex-row flex-col justify-between items-top">
             <div
-              className={`drop-zone ${
-                mediaData.length > 4 ? "pointer-events-none opacity-50" : ""
-              }`}
+              className={`drop-zone ${mediaData.length > 4 ? "pointer-events-none opacity-50" : ""
+                }`}
               {...getRootProps()}
             >
               <input {...getInputProps()} />
@@ -323,38 +324,38 @@ const UsernamePage = () => {
                   {ImageExtensionsAllowed.includes(
                     eachMediaData.key.split(".").pop() || ""
                   ) && (
-                    <>
-                      <Image
-                        src={eachMediaData.getPresignedUrl}
-                        width={1000}
-                        height={1000}
-                        alt="UploadedImage"
-                        className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                      />
-                      <Trash2
-                        className="text-red-700 cursor-pointer"
-                        onClick={() => handleDelete(eachMediaData.fileName)}
-                      />
-                    </>
-                  )}
+                      <>
+                        <Image
+                          src={eachMediaData.getPresignedUrl}
+                          width={1000}
+                          height={1000}
+                          alt="UploadedImage"
+                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
+                        />
+                        <Trash2
+                          className="text-red-700 cursor-pointer"
+                          onClick={() => handleDelete(eachMediaData.fileName)}
+                        />
+                      </>
+                    )}
                   {VideoExtensionsAllowed.includes(
                     eachMediaData.key.split(".").pop() || ""
                   ) && (
-                    <>
-                      {" "}
-                      <video
-                        src={eachMediaData.getPresignedUrl}
-                        controls
-                        width={1000}
-                        height={1000}
-                        className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                      ></video>
-                      <Trash2
-                        className="text-red-700 cursor-pointer"
-                        onClick={() => handleDelete(eachMediaData.fileName)}
-                      />
-                    </>
-                  )}
+                      <>
+                        {" "}
+                        <video
+                          src={eachMediaData.getPresignedUrl}
+                          controls
+                          width={1000}
+                          height={1000}
+                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
+                        ></video>
+                        <Trash2
+                          className="text-red-700 cursor-pointer"
+                          onClick={() => handleDelete(eachMediaData.fileName)}
+                        />
+                      </>
+                    )}
                 </div>
               ))}
             </div>

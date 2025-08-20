@@ -9,13 +9,14 @@ export const sendverificationemail = async (
   verifyCode: string
 ): Promise<ApiResponse> => {
   try {
-    await resend.emails.send({
-      from: "onboarding@resend.dev", //as we are using free tier account
+    const message = await resend.emails.send({
+      from: "noreply@feedback.anonytalks.co.in", 
       to: email,
       subject: "Bharat-Feedback-app | Verification Code",
       react: VerificationEmail({ username, otp: verifyCode }),
       /**So otp is the prop name expected by VerificationEmail, and verifyCode is the actual value being assigned to it */
     });
+    console.log("Message for Verfication Resend", message);
     return { success: true, message: "verification email sent successfully" };
   } catch (emailError) {
     console.error("Error sending verification email");

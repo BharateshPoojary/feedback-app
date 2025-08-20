@@ -7,6 +7,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { responseContent } from "@/hooks/use-response";
 import path from "path";
+
 //This route will generate a presigned url for the file name sent form client and the presigned url is then sent to client for uploading work
 export async function GET(request: NextRequest) {
   const client = new S3Client({
@@ -64,7 +65,9 @@ export async function GET(request: NextRequest) {
     Bucket: process.env.S3_BUCKET_NAME,
     Key: key,
   });
-  const putPresignedUrl = await getSignedUrl(client, putObjectCommand);
+  const putPresignedUrl = await getSignedUrl(client, putObjectCommand, {
+    expiresIn: 6,
+  });
   const getObjectCommand = new GetObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: key,

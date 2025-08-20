@@ -171,12 +171,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
       fetchPresignedUrls();
     }
   }, []); // Empty dependency array ensures this runs only once (each component has its own life cycle method) so useeffect will run once  her for each component  ensuring no dupliacte media  getting
-  const handleFullScreen = (index: number) => {
-    const imageElement = ImageRef.current[index];
-    if (imageElement) {
-      imageElement.requestFullscreen();
-    }
-  };
+
   const handleDownload = (url: string, fileName: string) => {
     saveAs(url, fileName);
   };
@@ -226,51 +221,49 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                     {img_extensions.includes(
                       eachMediaData.path.split(".").pop() || ""
                     ) && (
-                      <>
-                        <div className="relative w-40 h-40 min-[1155px]:w-60 min-[1155px]:h-60">
-                          <Image
-                            ref={(element) => {
-                              ImageRef.current[index] = element;
-                            }}
-                            src={eachMediaData.preSignedUrl}
-                            layout="fill"
-                            objectFit="cover"
-                            alt="Uploaded Image"
-                            className="rounded-md"
-                          />
-                          <div className="absolute bottom-2 right-2 flex gap-2 bg-black/50 p-2 rounded-md">
-                            <button>
-                              <Download
-                                className="text-white w-5 h-5"
-                                onClick={() =>
-                                  handleDownload(
-                                    eachMediaData.preSignedUrl,
-                                    `bharat-snaptalk-${Date.now()}`
-                                  )
-                                }
-                              />
-                            </button>
-                            <button onClick={() => handleFullScreen(index)}>
-                              <Maximize className="text-white w-5 h-5" />
-                            </button>
+                        <>
+                          <div className="relative w-40 h-40 min-[1155px]:w-60 min-[1155px]:h-60">
+                            <Image
+                              ref={(element) => {
+                                ImageRef.current[index] = element;
+                              }}
+                              src={eachMediaData.preSignedUrl}
+                              layout="fill"
+                              objectFit="cover"
+                              alt="Uploaded Image"
+                              className="rounded-md"
+                            />
+                            <div className="absolute bottom-2 right-2 flex gap-2 bg-black/50 p-2 rounded-md">
+                              <button>
+                                <Download
+                                  className="text-white w-5 h-5"
+                                  onClick={() =>
+                                    handleDownload(
+                                      eachMediaData.preSignedUrl,
+                                      `bharat-snaptalk-${Date.now()}`
+                                    )
+                                  }
+                                />
+                              </button>
+
+                            </div>
                           </div>
-                        </div>
-                      </>
-                    )}
+                        </>
+                      )}
                     {video_extensions.includes(
                       eachMediaData.path.split(".").pop() || ""
                     ) && (
-                      <>
-                        {" "}
-                        <video
-                          src={eachMediaData.preSignedUrl}
-                          controls
-                          width={1000}
-                          height={1000}
-                          className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
-                        ></video>
-                      </>
-                    )}
+                        <>
+                          {" "}
+                          <video
+                            src={eachMediaData.preSignedUrl}
+                            controls
+                            width={1000}
+                            height={1000}
+                            className="min-[1155px]:h-60  min-[1155px]:w-60 h-40 w-40 "
+                          ></video>
+                        </>
+                      )}
                   </div>
                 ))}
           </div>
