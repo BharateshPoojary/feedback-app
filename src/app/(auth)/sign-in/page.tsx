@@ -73,7 +73,6 @@ const SigninPage = () => {
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
             Welcome back to Bharat Feedback
           </h1>
-          <p className="mb-4">Login in to continue your feedback journey</p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
