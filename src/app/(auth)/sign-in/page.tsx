@@ -117,14 +117,7 @@ const SigninPage = () => {
             </div>
           </form>
         </Form>
-        <div className="flex justify-center">
-          <p>
-            New to Bharat Feedback ?&nbsp;
-            <Link href="/sign-Up" className="text-blue-500 hover:text-blue-900">
-              Sign Up
-            </Link>
-          </p>
-        </div>
+
         <div className="flex items-center my-2">
           <hr className="flex-grow border-gray-300" />
           {/* flex-grow is used to take the available space resulting in equal hr line both side of or  */}
@@ -134,7 +127,7 @@ const SigninPage = () => {
         <div className="flex justify-center">
           <Button
             onClick={() => signIn("google")}
-            className="bg-white text-gray-800 flex items-center gap-2 px-6 py-2 hover:bg-slate-200 font-bold"
+            className="bg-white text-gray-800 h-16 w-100 flex items-center gap-2 px-6 py-2 hover:bg-slate-200 font-bold"
           >
             <Image
               src="/Google.png"
@@ -143,8 +136,16 @@ const SigninPage = () => {
               alt="google"
               className="w-6 h-6"
             />
-            Log in with Google
+            Google
           </Button>
+        </div>
+        <div className="flex justify-center">
+          <p>
+            New to Bharat Feedback ?&nbsp;
+            <Link href="/sign-Up" className="text-blue-500 hover:text-blue-900">
+              Sign Up
+            </Link>
+          </p>
         </div>
       </div>
     </div>

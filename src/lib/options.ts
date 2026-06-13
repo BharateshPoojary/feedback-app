@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
           });
           console.log("Token", token);
           console.log("Account", account);
-          //token will conatin name,email,picture
+          //token will contAin name,email,picture
           // but if you are using credential provider you will not get this  it will be undefined instead you will have user object with all the properties  your user document is containing but the user in google provider will contain the same property the token is having so you can access email from user or token object
           //if the Oauth logged in user is existing in DB
           if (findUserwithemail && findUserwithemail.isVerified) {

@@ -33,6 +33,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { signIn } from "next-auth/react";
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   //state for storing username
@@ -126,13 +128,12 @@ const SignupPage = () => {
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
-      <div className="w-fit  max-w-md mx-auto p-4  space-y-8 space-x-3 bg-white rounded-lg shadow-md">
+      <div className="w-fit  max-w-md mx-auto p-4  space-y-4 space-x-3 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className=" font-extrabold tracking-tight  text-lg min-[474px]:text-2xl sm:text-4xl mb-6">
+          <h1 className=" font-extrabold tracking-tight  text-lg min-[474px]:text-2xl sm:text-4xl mb-2">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
             Bharat Feedback App Welcomes you
           </h1>
-          <p className="mb-4">Sign up to start your feedback adventure</p>
         </div>
         <Form {...form}>
           {/* The spread operator automatically passes all required props at once. To access all properties and methods of useForm hook if we not passed that it will throw error saying The Form component from Shadcn expects a prop that conforms to UseFormReturn, which is the return type of useForm() from react-hook-form. However, if you only pass children, it will complain that the required properties from UseFormReturn (like watch, setValue, etc.) are missing.*/}
@@ -165,11 +166,10 @@ const SignupPage = () => {
                   )}
 
                   <p
-                    className={`text-sm ${
-                      usernamereqmsg === "Username is unique"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
+                    className={`text-sm ${usernamereqmsg === "Username is unique"
+                      ? "text-green-500"
+                      : "text-red-500"
+                      }`}
                   >
                     {usernamereqmsg}
                   </p>
@@ -226,6 +226,27 @@ const SignupPage = () => {
             </div>
           </form>
         </Form>
+        <div className="flex items-center my-2">
+          <hr className="flex-grow border-gray-300" />
+          {/* flex-grow is used to take the available space resulting in equal hr line both side of or  */}
+          <span className="mx-2 text-gray-500">or</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+        <div className="flex justify-center">
+          <Button
+            onClick={() => signIn("google")}
+            className="bg-white text-gray-800 h-16 w-100 flex items-center gap-2 px-6 py-2 hover:bg-slate-200 font-bold"
+          >
+            <Image
+              src="/Google.png"
+              width={1000}
+              height={1000}
+              alt="google"
+              className="w-6 h-6"
+            />
+            Google
+          </Button>
+        </div>
         <div className="flex justify-center">
           <p>
             Already a member?&nbsp;

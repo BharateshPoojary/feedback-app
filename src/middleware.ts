@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt"; //this import is made to verify whether a user is having token or not
 
 // `withAuth` augments your `Request` with the user's token.
-// const secret = process.env.NEXTAUTH_SECRET;
+// const secret = process.env.BETTER_AUTH_SECRET;
 // export default withAuth(
 //   function middleware(req) {
 //     //console.log(req.nextauth.token);
