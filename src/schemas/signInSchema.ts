@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { userNameValidation } from "./signUpSchema";
 
 export const signInSchema = z.object({
   identifier: z
@@ -7,21 +8,15 @@ export const signInSchema = z.object({
     .refine(
       (val) => {
         const isEmail = z.string().email().safeParse(val).success;
-        const isUsername = /^[a-zA-Z0-9_]{3,20}$/.test(val);
+        const isUsername = userNameValidation.safeParse(val).success;
         return isEmail || isUsername;
       },
-      {
-        message: "Must be a valid email or username (3–20 alphanumeric characters)",
-      }
+      { message: "Enter a valid email or username" }
     ),
 
   password: z
     .string()
-    .min(1, { message: "Password is required" }),
+    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
 export type SignInInput = z.infer<typeof signInSchema>;
-
-/**This is we are implementing zod validation where we are reducing the work of monogodb
- * by using zod it provides multiple builtin methods for different types of validation
- */
