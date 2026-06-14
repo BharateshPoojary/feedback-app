@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { signInSchema } from "@/schemas/signInSchema";
+import { SignInInput, signInSchema } from "@/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
@@ -25,7 +25,7 @@ const SigninPage = () => {
   const [issubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof signInSchema>>({
+  const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema), //integrates the Zod schema validation with the form validation process
     defaultValues: {
       identifier: "", //Identifier can be username or email
@@ -67,11 +67,11 @@ const SigninPage = () => {
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700 ">
-      <div className="w-fit  max-w-md mx-auto p-4  space-y-8 space-x-3 bg-white rounded-lg shadow-md">
+      <div className="w-full  max-w-md mx-auto p-4  space-y-8 space-x-3 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className=" font-extrabold tracking-tight  text-lg min-[474px]:text-2xl sm:text-4xl mb-6">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
-            Welcome back to Bharat Feedback
+            Anonytalks
           </h1>
         </div>
         <Form {...form}>

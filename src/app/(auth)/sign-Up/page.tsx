@@ -128,11 +128,11 @@ const SignupPage = () => {
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
-      <div className="w-fit  max-w-md mx-auto p-4  space-y-4 space-x-3 bg-white rounded-lg shadow-md">
+      <div className="w-full  max-w-md mx-auto p-4  space-y-4 space-x-3 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className=" font-extrabold tracking-tight  text-lg min-[474px]:text-2xl sm:text-4xl mb-2">
             {/*min-width: 1024px means that the styles inside this media query will only apply if the viewport width is 1024 pixels or larger.*/}
-            Bharat Feedback App Welcomes you
+            Anonytalks 
           </h1>
         </div>
         <Form {...form}>
